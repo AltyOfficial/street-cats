@@ -1,7 +1,8 @@
 from pathlib import Path
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+print(BASE_DIR)
 
 SECRET_KEY = 'django-insecure-tdh5613hqez!6xo54d3)0qdcofnj2mc%ol0%8(#2dksa-28+1m'
 
@@ -18,9 +19,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'djoser',
-    'authentication.apps.AuthenticationConfig'
-
+    'users.apps.UsersConfig'
 ]
 
 
@@ -35,7 +36,7 @@ MIDDLEWARE = [
 ]
 
 
-ROOT_URLCONF = 'street_cats.urls'
+ROOT_URLCONF = 'app_config.urls'
 
 
 TEMPLATES = [
@@ -55,19 +56,16 @@ TEMPLATES = [
 ]
 
 
-WSGI_APPLICATION = 'street_cats.wsgi.application'
+WSGI_APPLICATION = 'app_config.wsgi.application'
 
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'backend/db.sqlite3',
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -85,9 +83,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/4.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -97,14 +92,16 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
-
 STATIC_URL = 'static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'authentication.User'
+AUTH_USER_MODEL = 'users.User'

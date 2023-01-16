@@ -32,3 +32,14 @@ class Profile(models.Model):
     
     def __str__(self) -> str:
         return self.user.username
+
+
+class Follow(models.Model):
+    follower = models.ForeignKey(
+        User, verbose_name='follower',
+        on_delete=models.CASCADE, related_name='following'
+    )
+    author = models.ForeignKey(
+        User, verbose_name='author',
+        on_delete=models.CASCADE, related_name='followers'
+    )

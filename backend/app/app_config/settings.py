@@ -21,7 +21,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
-    'users.apps.UsersConfig'
+    'api.v1.apps.ApiV1Config',
+    'posts.apps.PostsConfig',
+    'users.apps.UsersConfig',
 ]
 
 

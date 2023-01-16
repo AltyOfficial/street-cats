@@ -1,0 +1,76 @@
+from django.contrib.auth import get_user_model
+from django.db import models
+
+
+User = get_user_model()
+
+
+class Season(models.Model):
+    """Seasong for creating a post."""
+
+    title = models.CharField(
+        verbose_name='title', max_length=255,
+        blank=False, null=False, unique=True
+    )
+    color = models.CharField(
+        verbose_name='color', max_length=7,
+        blank=False, null=False,
+    )
+    slug = models.SlugField(
+        verbose_name='slug', max_length=50, 
+        blank=False, null=False, unique=True
+    )
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Season'
+        verbose_name_plural = 'Seasons'
+
+    def __str__(self):
+        return self.title
+
+
+class Post(models.Model):
+    """Post Model."""
+
+    CHOICES = (
+        ('Outdoors', 'Outdoors'),
+        ('Indoors', 'Indoors'),
+        ('Mixed', 'Mixed')
+    )
+
+    author = models.ForeignKey(
+        User, verbose_name='caption', 
+        on_delete=models.CASCADE, related_name='posts'
+    )
+    caption = models.CharField(max_length=200, verbose_name='caption')
+    text = models.TextField(verbose_name='text')
+    image = models.ImageField(
+        verbose_name='image', upload_to='posts/images/',
+        blank=False, null=False
+    )
+    meeted_at = models.CharField(max_length=20, choices=CHOICES)
+    season = models.ForeignKey(
+        Season, verbose_name='posts', default='-empty-',
+        on_delete=models.SET_DEFAULT, related_name='posts',
+        blank=False, null=False
+    )
+    feeded = models.BooleanField(default=False)
+    upvotes = models.ManyToManyField(
+        User, related_name='posts_liked', blank=True
+    )
+    downvotes = models.ManyToManyField(
+        User, related_name='posts_liked', blank=True
+    )
+    pub_date = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ('-pub_date',)
+        verbose_name = 'Post'
+        verbose_name_plural = 'Posts'
+    
+    def __str__(self) -> str:
+        return self.caption
+    
+    def get_like_number(self):
+        return 'zero'

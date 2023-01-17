@@ -40,7 +40,7 @@ class Post(models.Model):
     )
 
     author = models.ForeignKey(
-        User, verbose_name='caption', 
+        User, verbose_name='author', 
         on_delete=models.CASCADE, related_name='posts'
     )
     caption = models.CharField(max_length=200, verbose_name='caption')
@@ -51,16 +51,16 @@ class Post(models.Model):
     )
     meeted_at = models.CharField(max_length=20, choices=CHOICES)
     season = models.ForeignKey(
-        Season, verbose_name='posts', default='-empty-',
+        Season, verbose_name='season', default='-empty-',
         on_delete=models.SET_DEFAULT, related_name='posts',
         blank=False, null=False
     )
     feeded = models.BooleanField(default=False)
     upvotes = models.ManyToManyField(
-        User, related_name='posts_liked', blank=True
+        User, related_name='posts_upvoted', blank=True
     )
     downvotes = models.ManyToManyField(
-        User, related_name='posts_liked', blank=True
+        User, related_name='posts_downvoted', blank=True
     )
     pub_date = models.DateTimeField(auto_now_add=True, db_index=True)
 

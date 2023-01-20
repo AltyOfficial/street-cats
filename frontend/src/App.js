@@ -4,6 +4,8 @@ import { Button, Modal, makeStyles, Input } from '@material-ui/core'
 
 import './App.css';
 
+import PostCreation from './PostCreation.js'
+
 
 const BASE_URL = 'http://localhost:8000/'
 
@@ -33,6 +35,27 @@ const useStyles = makeStyles((theme) => ({
 
 
 function App() {
+
+  let base64code = '';
+
+  const onChange = (e) => {
+    const files = e.target.Files
+    const file = files[0]
+    getBase64(file)
+  }
+
+  const onLoad = (fileString) => {
+    this.base64code = fileString
+  }
+
+  const getBase64 = (file) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      onLoad(reader.result);
+    }
+    console.log(reader.result);
+  }
 
   const classes = useStyles();
   const [modalStyle, setModalStyle] = useState(getModalStyle);
@@ -262,6 +285,16 @@ function App() {
           }
         </div>
       </div>
+
+      {
+        authToken ? (
+          <PostCreation
+            authToken={authToken}
+          />
+        ) : (
+          <h3>You need to log in to upload</h3>
+        )
+      }
 
     </div>
   );

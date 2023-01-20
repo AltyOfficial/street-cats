@@ -1,38 +1,96 @@
-.App {
-  text-align: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+
+::-webkit-input-placeholder {
+  color: #c53e3e;
+  opacity: 10%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+
+input::placeholder {
+  color:#c53e3e;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+
+.app {
+  background-color: #f8f5f5;
+}
+
+
+.app_header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+  border-bottom: 1px solid lightgray;
+  object-fit: contain;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+  padding: 10px;
+}
+
+
+.app_headerLogo {
+  margin-left: 20px;
+  object-fit: contain;
+  width: 180px;
+}
+
+
+.app_headerRightMenu {
+  margin-right: 20px;
+  display: inline-block;
+  justify-content: space-between 20px;
+}
+
+
+.app_headerMiddleMenu {
+  position: relative;
+  margin: auto auto;
+}
+
+
+.Auth-form-container {
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
 }
 
-.App-link {
-  color: #61dafb;
+
+.Auth-form {
+  width: 420px;
+  box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  border-radius: 8px;
+  background-color: white;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+.Auth-form-content {
+  padding-left: 12%;
+  padding-right: 12%;
+}
+
+
+.Auth-form-title {
+  text-align: center;
+  margin-bottom: 1em;
+  font-size: 24px;
+  color: rgb(34, 34, 34);
+  font-weight: 800;
+}
+
+
+label {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgb(34, 34, 34);
 }

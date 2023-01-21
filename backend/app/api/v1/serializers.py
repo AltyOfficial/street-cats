@@ -9,13 +9,18 @@ from utils.fields import Base64ImageField
 User = get_user_model()
 
 
-class ProfileSeaizlizrt(serializers.ModelSerializer):
-    pass
+class ProfileSeriazlizer(serializers.ModelSerializer):
+    picture =  serializers.CharField(source='profile.picture')
+    
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'picture')
 
 
 class PostCreationSerializer(serializers.ModelSerializer):
     """Сериализатор для модели поста."""
 
+    author = ProfileSeriazlizer(read_only=True)
     season = serializers.PrimaryKeyRelatedField(
         queryset=Season.objects.all()
     )
@@ -25,7 +30,7 @@ class PostCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = (
-            'author', 'caption', 'text', 'image', 'season', 'feeded',
+            'id', 'author', 'caption', 'text', 'image', 'season', 'feeded',
             'meeted_at', 'season', 'pub_date'
         )
         read_only_fields = ('author', 'pub_date')

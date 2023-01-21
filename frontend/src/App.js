@@ -4,6 +4,7 @@ import { Button, Modal, makeStyles, Input } from '@material-ui/core'
 
 import './App.css';
 
+import Post from './Post.js'
 import PostCreation from './PostCreation.js'
 
 
@@ -72,6 +73,20 @@ function App() {
     setAuthToken(localStorage.getItem('authToken'));
     setUsername(localStorage.getItem('username'));
   }, [])
+
+  useEffect(() => {
+    fetch(BASE_URL + 'api/v1/posts/')
+      .then(response => {
+        const json = response.json()
+        if (response.ok) {
+          return json
+        }
+        throw response
+      })
+      .then(data => {
+        setPosts(data)
+      })
+  });
 
   const logIn = (event) => {
     
@@ -295,6 +310,14 @@ function App() {
           <h3>You need to log in to upload</h3>
         )
       }
+
+      <div className="app_posts">
+        {
+          posts.map(post => (
+            <Post post={post}/>
+          ))
+        }
+      </div>
 
     </div>
   );

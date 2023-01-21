@@ -15,7 +15,7 @@ class User(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE
+        User, on_delete=models.CASCADE, primary_key='profile'
     )
     picture = models.ImageField(
         upload_to='users/profile_pictures/',

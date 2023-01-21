@@ -21,9 +21,7 @@ class PostCreationSerializer(serializers.ModelSerializer):
     """Сериализатор для модели поста."""
 
     author = ProfileSeriazlizer(read_only=True)
-    season = serializers.PrimaryKeyRelatedField(
-        queryset=Season.objects.all()
-    )
+    season = serializers.CharField(required=True)
     image = Base64ImageField()
     feeded = serializers.BooleanField(required=True)
 
@@ -37,5 +35,12 @@ class PostCreationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         author = self.context.get('request').user
-        post = Post.objects.create(author=author, **validated_data)
+        season_input = validated_data.pop('season')
+        try:
+            season = Season.objects.get(title=season_input)
+        except Season.DoesNotExist:
+            raise serializers.ValidationError('no such season.')
+        post = Post.objects.create(
+            author=author, season=season, **validated_data
+        )
         return post

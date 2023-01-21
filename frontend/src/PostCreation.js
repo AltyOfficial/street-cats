@@ -17,6 +17,17 @@ function PostCreation({authToken}) {
   const [meetedAt, setMeetedAt] = useState('');
   const [image, setImage] = useState('');
 
+  const handleChangeFeeded = event => {
+
+    if (event.target.checked) {
+      console.log('✅ Checkbox is checked');
+    } else {
+      console.log('⛔️ Checkbox is NOT checked');
+    }
+    setFeeded(current => !current);
+
+  };
+
   const uploadImage = async (e) => {
     const file = e.target.files[0]
     const base64 = await base64Convertion(file)
@@ -45,9 +56,9 @@ function PostCreation({authToken}) {
     const json_string = JSON.stringify({
       'caption': caption,
       'text': text,
-      'season': 1,
-      'feeded': false,
-      'meeted_at': 'Outdoors',
+      'season': season,
+      'feeded': feeded,
+      'meeted_at': meetedAt,
       'image': image
     })
 
@@ -96,6 +107,24 @@ function PostCreation({authToken}) {
         onChange={(event) => setText(event.target.value)}
         value={text}
       />
+      <input
+        type="checkbox"
+        onChange={handleChangeFeeded}
+        value={feeded}
+      />
+      <select onChange={(event) => setSeason(event.target.value)}>
+        <option selected disabled>SEASON???</option>
+        <option value="Summer">Summer</option>
+        <option value="Autumn">Autumn</option>
+        <option value="Winter">Winter</option>
+        <option value="Spring">Spring</option>
+      </select>
+      <select onChange={(event) => setMeetedAt(event.target.value)}>
+        <option selected disabled>WHERE DID U MEET THAT CAT?</option>
+        <option value="Outdoors">Outdoors</option>
+        <option value="Indoors">Indoors</option>
+        <option value="Mixed">Mixed</option>
+      </select>
       <input type='file' onChange={(e) => {
         uploadImage(e)
       }}/>

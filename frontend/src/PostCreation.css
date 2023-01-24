@@ -1,0 +1,10 @@
+.post_creation {
+    display: flex;
+    align-items: center;
+}
+
+
+.post_variable {
+    margin-left: 10px;
+    
+}

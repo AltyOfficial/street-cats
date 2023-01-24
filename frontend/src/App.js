@@ -64,20 +64,27 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [openLogIn, setOpenLogIn] = useState(false);
   const [openSignUp, setOpenSignUp] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [authToken, setAuthToken] = useState(null);
+  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
     setAuthToken(localStorage.getItem('authToken'));
     setUsername(localStorage.getItem('username'));
+    setUser(JSON.parse(localStorage.getItem('user')));
   }, [])
 
   useEffect(() => {
     fetch(BASE_URL + 'api/v1/posts/')
       .then(response => {
         const json = response.json()
+        console.log(user)
+        console.log(user)
+        console.log(user)
         if (response.ok) {
           return json
         }
@@ -86,9 +93,13 @@ function App() {
       .then(data => {
         setPosts(data)
       })
-  });
+      .catch(error => {
+        console.log(error);
+      })
+  }, []);
 
   const logIn = (event) => {
+    event?.preventDefault();
     
     let formData = new FormData();
     formData.append('username', username)
@@ -111,16 +122,18 @@ function App() {
         setAuthToken(data.auth_token)
         window.localStorage.setItem('username', username)
         window.localStorage.setItem('authToken', data.auth_token)
+        get_user(data.auth_token);
       })
       .catch(error => {
         console.log(error);
         alert(error);
       })
-    
+
     setOpenLogIn(false);
   }
 
   const signUp = (event) => {
+    event?.preventDefault();
 
     const json_string = JSON.stringify({
       username: username,
@@ -153,6 +166,7 @@ function App() {
   }
 
   const signOut = (event) => {
+    event?.preventDefault();
     
     const requestOptions = {
       method: 'POST',
@@ -167,10 +181,64 @@ function App() {
         alert(error);
       })
 
+    setUser(null);
     window.localStorage.removeItem('username')
     window.localStorage.removeItem('authToken')
+    window.localStorage.removeItem('user')
     setAuthToken(null)
     setUsername('')
+  }
+
+  const getProfile = (user_id) => {
+    const requestOptions = {
+      method: 'GET',
+      headers: new Headers ({
+        'Authorization': 'Token ' + authToken
+      })
+    }
+
+    fetch(BASE_URL + 'api/users/' + user_id + '/', requestOptions)
+      .then(response => {
+        const json = response.json()
+        console.log(json)
+        if (response.ok) {
+          return json
+        }
+        throw response
+      })
+      .then(data => {
+        setProfile(data);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+
+  const get_user = (authToken) => {
+
+    const requestOptions = {
+      method: 'GET',
+      headers: new Headers ({
+        'Authorization': 'Token ' + authToken
+      })
+    }
+
+    fetch(BASE_URL + 'api/users/me/', requestOptions)
+      .then(response => {
+        const json = response.json()
+        console.log(json)
+        if (response.ok) {
+          return json
+        }
+        throw response
+      })
+      .then(data => {
+        setUser(data);
+        window.localStorage.setItem('user', JSON.stringify(data));
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }
 
   return (
@@ -280,16 +348,15 @@ function App() {
 
       <div className='app_header'>
         <img className='app_headerLogo'
-          alt='InstagramClone Logo'
-          src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/800px-Instagram_logo.svg.png'
+          alt='StreetCats Logo'
+          src='http://127.0.0.1:8000/media/StreetCatsLogo.svg'
         />
-        <div className='app_headerMiddleMenu'>
-          <Button variant='text'>Posts</Button>
-          <Button variant='text'>Bands</Button>
-        </div>
         <div className='app_headerRightMenu'>
           {authToken ? (
+            <div className="app_headerRightMenuLoggedIn">
               <Button onClick={() => signOut()}>Logout</Button>
+              <h5 className="app_headerRightMenuUsername">{ username }</h5>
+            </div>
             ) : (
               <div>
                 <Button variant='text' onClick={() => setOpenLogIn(true)}>Log In</Button>
@@ -300,21 +367,22 @@ function App() {
           }
         </div>
       </div>
-
-      {
-        authToken ? (
-          <PostCreation
-            authToken={authToken}
-          />
-        ) : (
-          <h3>You need to log in to upload</h3>
-        )
-      }
+      <div className="app_post_creation">
+        {
+          authToken ? (
+            <PostCreation
+              authToken={authToken}
+            />
+          ) : (
+            <h3>You need to log in to upload</h3>
+          )
+        }
+      </div>
 
       <div className="app_posts">
         {
           posts.map(post => (
-            <Post post={post}/>
+            <Post post={post} authToken={authToken} userId={user.id} />
           ))
         }
       </div>

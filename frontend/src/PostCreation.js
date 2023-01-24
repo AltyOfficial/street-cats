@@ -102,30 +102,35 @@ function PostCreation({authToken}) {
       />
       <input
         type='text'
+        className='post_variable'
         id='fileInput'
         placeholder='enter the text'
         onChange={(event) => setText(event.target.value)}
         value={text}
       />
-      <input
-        type="checkbox"
-        onChange={handleChangeFeeded}
-        value={feeded}
-      />
-      <select onChange={(event) => setSeason(event.target.value)}>
-        <option selected disabled>SEASON???</option>
+      <div className='post_creation'>
+        <h6 className='post_variable'>Did you feed the cat?</h6>
+        <input
+          type="checkbox"
+          className='post_variable'
+          onChange={handleChangeFeeded}
+          value={feeded}
+        />
+      </div>
+      <select onChange={(event) => setSeason(event.target.value)} defaultValue={'DEFAULT'} className='post_variable'>
+        <option value="DEFAULT" disabled>Season</option>
         <option value="Summer">Summer</option>
         <option value="Autumn">Autumn</option>
         <option value="Winter">Winter</option>
         <option value="Spring">Spring</option>
       </select>
-      <select onChange={(event) => setMeetedAt(event.target.value)}>
-        <option selected disabled>WHERE DID U MEET THAT CAT?</option>
+      <select onChange={(event) => setMeetedAt(event.target.value)} defaultValue={'DEFAULT'} className='post_variable'>
+        <option value="DEFAULT" disabled>Place where you met the cat</option>
         <option value="Outdoors">Outdoors</option>
         <option value="Indoors">Indoors</option>
         <option value="Mixed">Mixed</option>
       </select>
-      <input type='file' onChange={(e) => {
+      <input type='file' className='post_variable' onChange={(e) => {
         uploadImage(e)
       }}/>
       <Button className='imageUploadButton' onClick={createPost}>

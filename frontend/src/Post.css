@@ -7,7 +7,7 @@
     background-color: white;
     max-width: 500px;
     border: 1px solid lightgray;
-    margin-bottom: 45px;
+    margin-bottom: 40px;
 }
 
 
@@ -26,6 +26,35 @@
 }
 
 
+.post_rating {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: normal;
+    padding: 5px;
+    border-bottom: 1px solid lightgray;
+}
+
+
+.post_info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    border-bottom: 1px solid lightgray;
+}
+
+
+.post_ratingText {
+    margin-left: 15px;
+}
+
+
+.post_ratingRating {
+    margin-right: 15px;
+}
+
+
 .post_header {
     display: flex;
     align-items: center;
@@ -39,4 +68,75 @@
     align-items: center;
     justify-content: space-between;
     margin-left: 10px;
+}
+
+
+.post_captionButton {
+    display: flex;
+    align-items: center;
+}
+
+
+.post_caption_rating {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: 20px;
+}
+
+
+.new-button {
+    outline: none;
+}
+
+
+
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+  
+  
+.profile-config {
+    width: 600px;
+    box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
+    padding-top: 30px;
+    padding-bottom: 20px;
+    border-radius: 8px;
+    background-color: white;
+}
+  
+  
+.profile-content {
+    padding-left: 12%;
+    padding-right: 12%;
+}
+  
+
+.profileInfo {
+    margin-left: 25px;
+    display: flex;
+    align-items: initial;
+}
+
+
+.post_deleteButton {
+    border-radius: 8px;
+    padding: 7px;
+    font-size: 16px;
+    background-color: white;
+    color: black;
+    border: 1px solid rgb(207, 84, 84);
+    transition-duration: 0.15s;
+    width: 85px;
+}
+
+
+.post_deleteButton:hover {
+    background-color: rgb(207, 84, 84);
+    color: white;
 }

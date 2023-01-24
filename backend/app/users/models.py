@@ -5,6 +5,8 @@ from django.db import models
 class User(AbstractUser):
     """User Model."""
 
+    email = models.EmailField(max_length=255, unique=True, blank=False)
+
     REQUIRED_FIELDS = ['email']
 
     class Meta:

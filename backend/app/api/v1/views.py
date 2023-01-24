@@ -1,17 +1,22 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import (AllowAny, IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
 from posts.models import Post
+from users.models import Follow, Profile, User
+from utils.permissions import IsAuthorOrReadOnly
 
-from .serializers import PostCreationSerializer
+from .serializers import (PostCreationSerializer,
+                          ProfileSeriazlizer, UserSerializer)
 
 
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostCreationSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly]
     queryset = Post.objects.all()
 
     @action(methods=['POST', 'DELETE'], detail=True)
@@ -31,7 +36,7 @@ class PostViewSet(viewsets.ModelViewSet):
         post.upvotes.remove(request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(methods=['POST', 'DELETE'], detail=True)
+    @action(methods=['POST', 'DELETE', 'OPTIONS'], detail=True)
     def downvote(self, request, pk):
         """Дизлайк к посту, можно удалить."""
 
@@ -47,6 +52,12 @@ class PostViewSet(viewsets.ModelViewSet):
 
         post.downvotes.remove(request.user)
         return Response(status=204)
+
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    serializer_class = ProfileSeriazlizer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = Profile.objects.all()
 
 
 # {

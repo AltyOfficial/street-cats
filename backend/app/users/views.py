@@ -1,10 +1,12 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from api.v1.serializers import UserSerializer
+from utils.permissions import IsCurrentUserOrReadOnly
 
 from .models import Follow, Profile, User
 
@@ -12,12 +14,13 @@ from .models import Follow, Profile, User
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    pagination_class = PageNumberPagination
 
     def get_permissions(self):
         if self.request.method == 'POST':
             return (AllowAny(),)
 
-        return (IsAuthenticated(),)
+        return (IsCurrentUserOrReadOnly(),)
 
     @action(
         methods=['GET'], detail=False,

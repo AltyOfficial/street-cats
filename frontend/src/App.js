@@ -189,30 +189,30 @@ function App() {
     setUsername('')
   }
 
-  const getProfile = (user_id) => {
-    const requestOptions = {
-      method: 'GET',
-      headers: new Headers ({
-        'Authorization': 'Token ' + authToken
-      })
-    }
+  // const getProfile = (user_id) => {
+  //   const requestOptions = {
+  //     method: 'GET',
+  //     headers: new Headers ({
+  //       'Authorization': 'Token ' + authToken
+  //     })
+  //   }
 
-    fetch(BASE_URL + 'api/users/' + user_id + '/', requestOptions)
-      .then(response => {
-        const json = response.json()
-        console.log(json)
-        if (response.ok) {
-          return json
-        }
-        throw response
-      })
-      .then(data => {
-        setProfile(data);
-      })
-      .catch(error => {
-        console.log(error);
-      })
-  }
+  //   fetch(BASE_URL + 'api/users/' + user_id + '/', requestOptions)
+  //     .then(response => {
+  //       const json = response.json()
+  //       console.log(json)
+  //       if (response.ok) {
+  //         return json
+  //       }
+  //       throw response
+  //     })
+  //     .then(data => {
+  //       setProfile(data);
+  //     })
+  //     .catch(error => {
+  //       console.log(error);
+  //     })
+  // }
 
   const get_user = (authToken) => {
 
@@ -355,7 +355,7 @@ function App() {
           {authToken ? (
             <div className="app_headerRightMenuLoggedIn">
               <Button onClick={() => signOut()}>Logout</Button>
-              <h5 className="app_headerRightMenuUsername">{ username }</h5>
+              <h5 className="app_headerRightMenuUsername">{ user.username }</h5>
             </div>
             ) : (
               <div>
@@ -367,6 +367,7 @@ function App() {
           }
         </div>
       </div>
+      
       <div className="app_post_creation">
         {
           authToken ? (
@@ -382,7 +383,7 @@ function App() {
       <div className="app_posts">
         {
           posts.map(post => (
-            <Post post={post} authToken={authToken} userId={user.id} />
+            <Post post={post} authToken={authToken} user={user} />
           ))
         }
       </div>

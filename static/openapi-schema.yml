@@ -5,19 +5,13 @@ info:
 paths:
   /api/users/:
     get:
-      operationId: Список пользователей
+      operationId: Users
       description: ''
       parameters:
         - name: page
           required: false
           in: query
-          description: Номер страницы.
-          schema:
-            type: integer
-        - name: limit
-          required: false
-          in: query
-          description: Количество объектов на странице.
+          description: Page Number.
           schema:
             type: integer
       responses:

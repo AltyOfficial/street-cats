@@ -140,3 +140,59 @@
     background-color: rgb(207, 84, 84);
     color: white;
 }
+
+
+.post_updateProfile {
+    border-radius: 8px;
+    padding: 7px;
+    font-size: 16px;
+    background-color: white;
+    color: black;
+    border: 1px solid rgb(27, 31, 88);
+    transition-duration: 0.15s;
+    width: 160px;
+}
+
+
+.post_updateProfile:hover {
+    background-color: rgb(27, 31, 88);
+    color: white;
+}
+
+
+.Auth-form {
+    width: 420px;
+    box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
+    padding-top: 30px;
+    padding-bottom: 20px;
+    border-radius: 8px;
+    background-color: white;
+  }
+  
+  
+.Auth-form-content {
+    padding-left: 12%;
+    padding-right: 12%;
+}
+  
+  
+  .Auth-form-title {
+    text-align: center;
+    margin-bottom: 1em;
+    font-size: 24px;
+    color: rgb(34, 34, 34);
+    font-weight: 800;
+  }
+  
+  
+  label {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(34, 34, 34);
+  }
+
+
+  .text-color-and-size {
+    font-size: 12px;
+    color: rgb(100, 99, 99);
+  }

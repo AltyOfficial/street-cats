@@ -20,6 +20,9 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.request.method == 'POST':
             return (AllowAny(),)
 
+        elif self.request.method == 'DELETE' and self.action != 'follow':
+            return (IsAdminUser(),)
+
         return (IsCurrentUserOrReadOnly(),)
 
     @action(

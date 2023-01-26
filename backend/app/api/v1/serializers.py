@@ -88,8 +88,9 @@ class PostCreationSerializer(serializers.ModelSerializer):
         return post
     
     def update(self, instance, validated_data):
-        season_input = validated_data.pop('season')
-        validated_data['season'] = Season.objects.get(title=season_input)
+        if 'season' in validated_data:
+            season_input = validated_data.pop('season')
+            validated_data['season'] = Season.objects.get(title=season_input)
         return super().update(instance, validated_data)
     
     def get_rating(self, obj):

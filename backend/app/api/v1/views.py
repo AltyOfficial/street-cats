@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import (AllowAny, IsAuthenticated,
+from rest_framework.permissions import (AllowAny, IsAdminUser,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
@@ -31,10 +31,10 @@ class PostViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             post.downvotes.remove(request.user)
             post.upvotes.add(request.user)
-            return Response('You upvoted the post', status=200)
+            return Response('You upvoted the post', status=201)
         
         post.upvotes.remove(request.user)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=204)
 
     @action(methods=['POST', 'DELETE', 'OPTIONS'], detail=True)
     def downvote(self, request, pk):
@@ -48,7 +48,7 @@ class PostViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             post.upvotes.remove(request.user)
             post.downvotes.add(request.user)
-            return Response('You downvoted the post', status=418)
+            return Response('You downvoted the post', status=201)
 
         post.downvotes.remove(request.user)
         return Response(status=204)

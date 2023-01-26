@@ -1,9 +1,9 @@
-openapi: 3.0.2
+openapi: 3.0.3
 
 
 info:
-  title: 'Foodgram'
-  version: ''
+  title: 'Street Cats'
+  version: 'version 1'
 
 
 paths:
@@ -11,6 +11,8 @@ paths:
   /api/users/:
 
     get:
+      tags:
+        - Users
       operationId: List of users
       description: ''
       parameters:
@@ -28,6 +30,7 @@ paths:
             type: string
       responses:
         '200':
+          description: 'Success.'
           content:
             application/json:
               schema:
@@ -52,11 +55,10 @@ paths:
                     items:
                       $ref: '#/components/schemas/User'
                     description: 'List of current page objects.'
-          description: ''
-      tags:
-        - Users
 
     post:
+      tags:
+          - Users
       operationId: User registration
       description: ''
       parameters: []
@@ -67,73 +69,212 @@ paths:
               $ref: '#/components/schemas/CustomUserCreate'
       responses:
         '201':
+          description: 'User created successfully.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomUserResponseOnCreate'
-          description: 'User successfully created.'
         '400':
           $ref: '#/components/responses/ValidationError'
-      tags:
-        - Users
 
 
-#   /api/users/{id}/:
-
-#     get:
-#       operationId: User profile
-#       description: 'Allowed to all users.'
-#       security:
-#         - Token: [ ]
-#       parameters:
-#         - name: id
-#           in: path
-#           required: true
-#           description: "Unique id of the user."
-#           schema:
-#             type: string
+#   /api/users/set_password/:
+#     post:
+#       operationId: Изменение пароля
+#       description: 'Изменение пароля текущего пользователя'
+#       parameters: []
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/SetPassword'
 #       responses:
-#         '200':
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/User'
-#           description: ''
-#         '404':
-#           $ref: '#/components/responses/NotFound'
-#       tags:
-#         - Users
-    
-#     patch:
-#       operationId: User update
-#       description: 'Allowed only for owner.'
-#       security:
-#         - Token: [ ]
-#       parameters:
-#         - name: id
-#           in: path
-#           required: true
-#           description: "Уникальный id этого пользователя"
-#           schema:
-#             type: string
-#       responses:
-#         '200':
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/User'
-#           description: ''
-#         '404':
-#           $ref: '#/components/responses/NotFound'
+#         '204':
+#           description: 'Пароль успешно изменен'
+#         '400':
+#           $ref: '#/components/responses/ValidationError'
 #         '401':
 #           $ref: '#/components/responses/AuthenticationError'
 #       tags:
-#         - Users
+#         - Пользователи
+
+
+  /api/users/me/:
+
+    get:
+      tags:
+        - Users
+      operationId: Current user
+      description: Endpoint to get information about current user.
+      parameters: []
+      security:
+        - Token: [ ]
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+
+
+  /api/users/subscriptions/:
+
+    get:
+      tags:
+        - Follows
+      operationId: User's subscriptions
+      descriptions: 'Return a list of following users with some extra fields.'
+      parameters: []
+      responses:
+        '200':
+          description: 'Success.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+
+
+  /api/users/{id}/:
+
+    get:
+      tags:
+        - User Detail
+      operationId: User profile
+      description: 'Allowed to all users.'
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Unique id of the user."
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Success.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags:
+        - User Detail
+      operationId: User update
+      description: 'Allowed only for owner, in this endpoint user can only change his username and email.'
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Unique id of the user."
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomUserUpdate'
+      responses:
+        '200':
+          description: 'User successfully updated.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+
+  /api/users/{username}/follow/:
+
+    post:
+      tags:
+        - Follows
+      operationId: Follow user
+      description: 'Allowed only for authorized users.'
+      security:
+        - Token: [ ]
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "Unique username of the user."
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Follow object created successfully.
+          content:
+            application/json:
+              description: Created.
+              type: string
+              example: 'you followed <username>'
+        '400':
+          description:  'Following error (For example if you are trying to follow yourself)'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelfFolowError'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Follows
+      operationId: Unfollow user
+      description: 'Allowed only for authorized users.'
+      security:
+        - Token: [ ]
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "Unique username of the user."
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Follow object deleted successfully.
+          content:
+            application/json:
+              description: No content.
+              type: string
+              example: 'you unfollowed <username>'
+        '400':
+          description:  'Following error (For example if you are trying to unfollow yourself)'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelfFolowError'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
 
   /api/v1/posts/:
 
     get:
+      tags:
+       - Posts
       operationId: List of posts
       description: Post list allowed to all users. Filtering by author, season and place is available.
       parameters:
@@ -161,6 +302,7 @@ paths:
               type: string
       responses:
         '200':
+          description: ''
           content:
             application/json:
               schema:
@@ -185,514 +327,274 @@ paths:
                     items:
                       $ref: '/components/schemas/Post'
                     description: 'List of current page objects.'
-          description: ''
+
+    post:
       tags:
-       - Posts
+        - Posts
+      security:
+        - Token: []
+      operationId: Post creation
+      description: 'Allowed only for authorized user.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreate'
+      responses:
+        '201':
+          description: Post created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '/components/schemas/Post'
+        '400':
+          description: Standart DRF Validation Error.
+          content:
+            application/json:
+              schema:
+                $ref: '/components/schemas/ValidationError'
+        '401':
+          $ref: '#/components/schemas/AuthenticationError'
 
 
-#   /api/recipes/:
+  /api/v1/posts/{id}/:
 
-#     post:
-#       security:
-#         - Token: []
-#       operationId: Создание рецепта
-#       description: 'Доступно только авторизованному пользователю'
-#       parameters: []
-#       requestBody:
-#         content:
-#           application/json:
-#             schema:
-#               $ref: '#/components/schemas/RecipeCreateUpdate'
-#       responses:
-#         '201':
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/RecipeList'
-#           description: 'Рецепт успешно создан'
-#         '400':
-#           description: 'Ошибки валидации в стандартном формате DRF'
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/ValidationError'
-#         '401':
-#           $ref: '#/components/schemas/AuthenticationError'
-#         '404':
-#           $ref: '#/components/responses/NotFound'
-#       tags:
-#         - Рецепты
-#   /api/recipes/download_shopping_cart/:
-#     get:
-#       security:
-#         - Token: [ ]
-#       operationId: Скачать список покупок
-#       description: 'Скачать файл со списком покупок. Это может быть TXT/PDF/CSV. Важно, чтобы контент файла удовлетворял требованиям задания. Доступно только авторизованным пользователям.'
-#       parameters: []
-#       responses:
-#         '200':
-#           description: ''
-#           content:
-#             application/pdf:
-#               schema:
-#                 type: string
-#                 format: binary
-#             text/plain:
-#               schema:
-#                 type: string
-#                 format: binary
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
-#       tags:
-#         - Список покупок
-#   /api/recipes/{id}/:
-#     get:
-#       operationId: Получение рецепта
-#       description: ''
-#       parameters:
-#         - name: id
-#           in: path
-#           required: true
-#           description: "Уникальный идентификатор этого рецепта"
-#           schema:
-#             type: string
-#       responses:
-#         '200':
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/RecipeList'
-#           description: ''
-#       tags:
-#         - Рецепты
-#     patch:
-#       operationId: Обновление рецепта
-#       security:
-#         - Token: [ ]
-#       description: 'Доступно только автору данного рецепта'
-#       parameters:
-#         - name: id
-#           in: path
-#           required: true
-#           description: "Уникальный идентификатор этого рецепта."
-#           schema:
-#             type: string
-#       requestBody:
-#         content:
-#           application/json:
-#             schema:
-#               $ref: '#/components/schemas/RecipeCreateUpdate'
-#       responses:
-#         '200':
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/RecipeList'
-#           description: 'Рецепт успешно обновлен'
-#         '400':
-#           $ref: '#/components/responses/NestedValidationError'
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
-#         '403':
-#           $ref: '#/components/responses/PermissionDenied'
-#         '404':
-#           $ref: '#/components/responses/NotFound'
-#       tags:
-#         - Рецепты
-#     delete:
-#       operationId: Удаление рецепта
+    get:
+      tags:
+        - Post Detail
+      operationId: Get post
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Unique id of the post."
+          schema:
+            type: string
+      resonses:
+        '200':
+          description: 'Success.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
 
-#       description: 'Доступно только автору данного рецепта'
-#       security:
-#         - Token: [ ]
-#       parameters:
-#         - name: id
-#           in: path
-#           required: true
-#           description: "Уникальный идентификатор этого рецепта"
-#           schema:
-#             type: string
-#       responses:
-#         '204':
-#           description: 'Рецепт успешно удален'
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
-#         '403':
-#           $ref: '#/components/responses/PermissionDenied'
-#         '404':
-#           $ref: '#/components/responses/NotFound'
-#       tags:
-#         - Рецепты
-#   /api/recipes/{id}/favorite/:
-#     post:
-#       operationId: Добавить рецепт в избранное
-#       description: 'Доступно только авторизованному пользователю.'
-#       security:
-#         - Token: [ ]
-#       parameters:
-#         - name: id
-#           in: path
-#           required: true
-#           description: "Уникальный идентификатор этого рецепта"
-#           schema:
-#             type: string
-#       responses:
-#         '201':
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/RecipeMinified'
-#           description: 'Рецепт успешно добавлен в избранное'
-#         '400':
-#           description: 'Ошибка добавления в избранное (Например, когда рецепт уже есть в избранном)'
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/SelfMadeError'
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
+    patch:
+      tags:
+        - Post Detail
+      operationId: Post update
+      description: 'Allowed only for owner.'
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Unique id of the post."
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUpdate'
+      responses:
+        '200':
+          description: 'Post updated successfully.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
-#       tags:
-#         - Избранное
-#     delete:
-#       operationId: Удалить рецепт из избранного
-#       description: 'Доступно только авторизованным пользователям'
-#       security:
-#         - Token: [ ]
-#       parameters:
-#         - name: id
-#           in: path
-#           required: true
-#           description: "Уникальный идентификатор этого рецепта."
-#           schema:
-#             type: string
-#       responses:
-#         '204':
-#           description: 'Рецепт успешно удален из избранного'
-#         '400':
-#           description: 'Ошибка удаления из избранного (Например, когда рецепта там не было)'
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/SelfMadeError'
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
-#       tags:
-#         - Избранное
-#   /api/recipes/{id}/shopping_cart/:
-#     post:
-#       operationId: Добавить рецепт в список покупок
-#       description: 'Доступно только авторизованным пользователям'
-#       security:
-#         - Token: [ ]
-#       parameters:
-#         - name: id
-#           in: path
-#           required: true
-#           description: "Уникальный идентификатор этого рецепта."
-#           schema:
-#             type: string
-#       responses:
-#         '201':
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/RecipeMinified'
-#           description: 'Рецепт успешно добавлен в список покупок'
-#         '400':
-#           description: 'Ошибка добавления в список покупок (Например, когда рецепт уже есть в списке покупок)'
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/SelfMadeError'
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
-#       tags:
-#         - Список покупок
-#     delete:
-#       operationId: Удалить рецепт из списка покупок
-#       description: 'Доступно только авторизованным пользователям'
-#       security:
-#         - Token: [ ]
-#       parameters:
-#         - name: id
-#           in: path
-#           required: true
-#           description: "Уникальный идентификатор этого рецепта."
-#           schema:
-#             type: string
-#       responses:
-#         '204':
-#           description: 'Рецепт успешно удален из списка покупок'
-#         '400':
-#           description: 'Ошибка удаления из списка покупок (Например, когда рецепта там не было)'
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/SelfMadeError'
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
-#       tags:
-#         - Список покупок
-
-#   /api/users/me/:
-#     get:
-#       operationId: Текущий пользователь
-#       description: ''
-#       parameters: []
-#       security:
-#         - Token: [ ]
-#       responses:
-#         '200':
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/User'
-#           description: ''
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
-#       tags:
-#         - Пользователи
-#   /api/users/subscriptions/:
-#     get:
-#       operationId: Мои подписки
-#       description: 'Возвращает пользователей, на которых подписан текущий пользователь. В выдачу добавляются рецепты.'
-#       parameters:
-#         - name: page
-#           required: false
-#           in: query
-#           description: Номер страницы.
-#           schema:
-#             type: integer
-#         - name: limit
-#           required: false
-#           in: query
-#           description: Количество объектов на странице.
-#           schema:
-#             type: integer
-#         - name: recipes_limit
-#           required: false
-#           in: query
-#           description: Количество объектов внутри поля recipes.
-#           schema:
-#             type: integer
-#       responses:
-#         '200':
-#           content:
-#             application/json:
-#               schema:
-#                 type: object
-#                 properties:
-#                   count:
-#                     type: integer
-#                     example: 123
-#                     description: 'Общее количество объектов в базе'
-#                   next:
-#                     type: string
-#                     nullable: true
-#                     format: uri
-#                     example: http://foodgram.example.org/api/users/subscriptions/?page=4
-#                     description: 'Ссылка на следующую страницу'
-#                   previous:
-#                     type: string
-#                     nullable: true
-#                     format: uri
-#                     example: http://foodgram.example.org/api/users/subscriptions/?page=2
-#                     description: 'Ссылка на предыдущую страницу'
-#                   results:
-#                     type: array
-#                     items:
-#                       $ref: '#/components/schemas/UserWithRecipes'
-#                     description: 'Список объектов текущей страницы'
-#           description: ''
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
-#       tags:
-#         - Подписки
-#   /api/users/{id}/subscribe/:
-#     post:
-#       operationId: Подписаться на пользователя
-#       description: 'Доступно только авторизованным пользователям'
-#       security:
-#         - Token: [ ]
-#       parameters:
-#         - name: id
-#           in: path
-#           required: true
-#           description: "Уникальный идентификатор этого пользователя."
-#           schema:
-#             type: string
-#         - name: recipes_limit
-#           required: false
-#           in: query
-#           description: Количество объектов внутри поля recipes.
-#           schema:
-#             type: integer
-#       responses:
-#         '201':
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/UserWithRecipes'
-#           description: 'Подписка успешно создана'
-#         '400':
-#           description: 'Ошибка подписки (Например, если уже подписан или при подписке на себя самого)'
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/SelfMadeError'
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
-#         '404':
-#           $ref: '#/components/responses/NotFound'
-#       tags:
-#         - Подписки
-#     delete:
-#       operationId: Отписаться от пользователя
-#       description: 'Доступно только авторизованным пользователям'
-#       security:
-#         - Token: [ ]
-#       parameters:
-#         - name: id
-#           in: path
-#           required: true
-#           description: "Уникальный идентификатор этого пользователя."
-#           schema:
-#             type: string
-#       responses:
-#         '204':
-#           description: 'Успешная отписка'
-#         '400':
-#           description: 'Ошибка отписки (Например, если не был подписан)'
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/SelfMadeError'
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
-#         '404':
-#           $ref: '#/components/responses/NotFound'
-
-#       tags:
-#         - Подписки
-#   /api/ingredients/:
-#     get:
-#       operationId: Список ингредиентов
-#       description: 'Список ингредиентов с возможностью поиска по имени.'
-#       parameters:
-#         - name: name
-#           required: false
-#           in: query
-#           description: Поиск по частичному вхождению в начале названия ингредиента.
-#           schema:
-#             type: string
-#       responses:
-#         '200':
-#           content:
-#             application/json:
-#               schema:
-#                 type: array
-#                 items:
-#                   $ref: '#/components/schemas/Ingredient'
-#           description: ''
-#       tags:
-#         - Ингредиенты
-#   /api/ingredients/{id}/:
-#     get:
-#       operationId: Получение ингредиента
-#       description: 'Уникальный идентификатор этого ингредиента.'
-#       parameters:
-#         - name: id
-#           in: path
-#           required: true
-#           description: ''
-#           schema:
-#             type: integer
-#       responses:
-#         '200':
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/Ingredient'
-#           description: ''
-#       tags:
-#         - Ингредиенты
-#   /api/users/set_password/:
-#     post:
-#       operationId: Изменение пароля
-#       description: 'Изменение пароля текущего пользователя'
-#       parameters: []
-#       requestBody:
-#         content:
-#           application/json:
-#             schema:
-#               $ref: '#/components/schemas/SetPassword'
-#       responses:
-#         '204':
-#           description: 'Пароль успешно изменен'
-#         '400':
-#           $ref: '#/components/responses/ValidationError'
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
-#       tags:
-#         - Пользователи
-#   /api/auth/token/login/:
-#     post:
-#       operationId: Получить токен авторизации
-#       description: Используется для авторизации по емейлу и паролю, чтобы далее использовать токен при запросах.
-#       parameters: []
-#       requestBody:
-#         content:
-#           application/json:
-#             schema:
-#               $ref: '#/components/schemas/TokenCreate'
-#       responses:
-#         '201':
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: '#/components/schemas/TokenGetResponse'
-#           description: ''
-#       tags:
-#         - Пользователи
-#   /api/auth/token/logout/:
-#     post:
-#       operationId: Удаление токена
-#       description: Удаляет токен текущего пользователя
-#       parameters: []
-#       requestBody:
-#         content:
-#           application/json:
-#             schema: {}
-
-#       responses:
-#         '204':
-#           content:
-#             application/json:
-#               schema: {}
-#           description: ''
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
-#       tags:
-#         - Пользователи
+    delete:
+      tags:
+        - Post Detail
+      operationId: Delete post
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Unique id of the post."
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'Post deleted successfully.'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
 
+  /api/v1/posts/{id}/upvote/:
+
+    post:
+      tags:
+        - Post Rating
+      operationId: Upvote post
+      description: 'Allowed only for authorized users.'
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Unique id of the post."
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Upvoted successfully.
+          content:
+            application/json:
+              description: Created
+              type: string
+              example: 'You upvoted the post.'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    delete:
+      tags:
+        - Post Rating
+      operationId: Delete upvote
+      description: 'Allowed only for authorized users.'
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Unique id of the post."
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Your upvote is deleted.
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
 
+  /api/v1/posts/{id}/downvote/:
+
+    post:
+      tags:
+        - Post Rating
+      operationId: Downvote post
+      description: 'Allowed only for authorized users.'
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Unique id of the post."
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Downvoted successfully.
+          content:
+            application/json:
+              description: Created
+              type: string
+              example: 'You downvoted the post.'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    delete:
+      tags:
+        - Post Rating
+      operationId: Delete downvote
+      description: 'Allowed only for authorized users.'
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Unique id of the post."
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Your downvote is deleted.
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
 
+  /api/auth/token/login/:
+
+    post:
+      tags:
+        - Authentication
+      operationId: Get token
+      description: Get a token to send it with requests.
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+      responses:
+        '201':
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenGetResponse'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                description: Field error.
+                type: object
+                properties:
+                  detail:
+                    description: 'Error description.'
+                    example: "Unable to log in with provided credentials."
+                    type: string
 
 
+  /api/auth/token/logout/:
 
-
-
-
-
-
-
-
-
-
+    post:
+      tags:
+        - Authentication
+      operationId: Remove token
+      description: Removing token of the current user
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+      responses:
+        '204':
+          description: 'Token deleted successfully.'
+          content:
+            application/json:
+              schema: {}
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
 
 
 
@@ -749,7 +651,6 @@ components:
       properties:
         email:
           type: string
-          format: email
           description: "Email address."
           example: "user@example.com"
         username:
@@ -764,6 +665,19 @@ components:
         - username
         - password
         - email
+
+
+    CustomUserUpdate:
+      type: object
+      properties:
+        email:
+          type: string
+          description: "Email address."
+          example: "user@example.com"
+        username:
+          type: string
+          description: "Unique username."
+          example: "username"
 
 
     CustomUserResponseOnCreate:
@@ -807,46 +721,6 @@ components:
               type: integer
               example: 0
               description: "Number of followers."
-
-
-    # UserWithRecipes:
-    #   description: 'Расширенный объект пользователя с рецептами'
-    #   type: object
-    #   properties:
-    #     email:
-    #       type: string
-    #       format: email
-    #       maxLength: 254
-    #       description: "Адрес электронной почты"
-    #     id:
-    #       type: integer
-    #       readOnly: true
-    #     username:
-    #       type: string
-    #       description: "Уникальный юзернейм"
-    #       pattern: ^[\w.@+-]+\z
-    #       maxLength: 150
-    #     first_name:
-    #       type: string
-    #       maxLength: 150
-    #       description: "Имя"
-    #       example: "Вася"
-    #     last_name:
-    #       type: string
-    #       maxLength: 150
-    #       description: "Фамилия"
-    #       example: "Пупкин"
-    #     is_subscribed:
-    #       type: boolean
-    #       readOnly: true
-    #       description: "Подписан ли текущий пользователь на этого"
-    #     recipes:
-    #       type: array
-    #       items:
-    #         $ref: '#/components/schemas/RecipeMinified'
-    #     recipes_count:
-    #       type: integer
-    #       description: 'Общее количество рецептов пользователя'
 
 
     Post:
@@ -893,117 +767,77 @@ components:
           description: 'Rating of the post (String format because I had a rough time with react using integer so I changed it to string.).'
         
 
-    # RecipeList:
-    #   type: object
-    #   properties:
-    #     id:
-    #       type: integer
-    #       readOnly: true
-    #       description: 'Уникальный id'
-    #     tags:
-    #       description: 'Список тегов'
-    #       type: array
-    #       items:
-    #         $ref: '#/components/schemas/Tag'
-    #     author:
-    #       $ref: '#/components/schemas/User'
-    #     ingredients:
-    #       description: 'Список ингредиентов'
-    #       type: array
-    #       items:
-    #         $ref: '#/components/schemas/IngredientInRecipe'
-    #     is_favorited:
-    #       type: boolean
-    #       description: 'Находится ли в избранном'
-    #     is_in_shopping_cart:
-    #       type: boolean
-    #       description: 'Находится ли в корзине'
-    #     name:
-    #       type: string
-    #       maxLength: 200
-    #       description: 'Название'
-    #     image:
-    #       description: 'Ссылка на картинку на сайте'
-    #       example: 'http://foodgram.example.org/media/recipes/images/image.jpeg'
-    #       type: string
-    #       format: url
-    #     text:
-    #       description: 'Описание'
-    #       type: string
-    #     cooking_time:
-    #       description: 'Время приготовления (в минутах)'
-    #       type: integer
-    #       minimum: 1
-    #   required:
-    #     - tags
-    #     - author
-    #     - is_favorited
-    #     - is_in_shopping_cart
-    #     - name
-    #     - image
-    #     - text
-    #     - cooking_time
-    # RecipeMinified:
-    #   type: object
-    #   properties:
-    #     id:
-    #       type: integer
-    #       readOnly: true
-    #       description: 'Уникальный id'
-    #     name:
-    #       type: string
-    #       maxLength: 200
-    #       description: 'Название'
-    #     image:
-    #       description: 'Ссылка на картинку на сайте'
-    #       example: 'http://foodgram.example.org/media/recipes/images/image.jpeg'
-    #       type: string
-    #       format: url
-    #     cooking_time:
-    #       description: 'Время приготовления (в минутах)'
-    #       type: integer
-    #       minimum: 1
-    # Ingredient:
-    #   type: object
-    #   properties:
-    #     id:
-    #       type: integer
-    #       readOnly: true
-    #     name:
-    #       type: string
-    #       maxLength: 200
-    #       example: 'Капуста'
-    #     measurement_unit:
-    #       type: string
-    #       maxLength: 200
-    #       example: 'кг'
-    #   required:
-    #     - name
-    #     - measurement_unit
-    # IngredientInRecipe:
-    #   type: object
-    #   properties:
-    #     id:
-    #       type: integer
-    #       readOnly: true
-    #     name:
-    #       type: string
-    #       maxLength: 200
-    #       description: 'Название'
-    #       example: 'Картофель отварной'
-    #     measurement_unit:
-    #       type: string
-    #       maxLength: 200
-    #       description: 'Единицы измерения'
-    #       example: 'г'
-    #     amount:
-    #       type: integer
-    #       description: 'Количество'
-    #       minimum: 1
+    PostCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        caption:
+          type: string
+          example: 'test caption'
+          description: Post caption.
+        text:
+          type: string
+          example: 'lorem ipsum'
+          description: Post text.
+        image:
+          type: string
+          example: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg=='
+          description: Image coded in Base64
+        season:
+          type: string
+          example: 'Winter'
+          description: Only 4 variants available, then it changes to Season model in serializer creation.
+        feeded:
+          type: boolean
+          example: true
+          description: Check if you fed the cat.
+        meeted_at:
+          type: string
+          example: Outdoors.
+          description: Type of place where you met the cat, this field has 3 choices.
+      required:
+        - caption
+        - text
+        - image
+        - season
+        - feeded
+        - meeted_at
 
-    #   required:
-    #     - name
-    #     - measurement_unit
+
+    PostUpdate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        caption:
+          type: string
+          example: 'test caption'
+          description: Post caption.
+        text:
+          type: string
+          example: 'lorem ipsum'
+          description: Post text.
+        image:
+          type: string
+          example: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg=='
+          description: Image coded in Base64
+        season:
+          type: string
+          example: 'Winter'
+          description: Only 4 variants available, then it changes to Season model in serializer creation.
+        feeded:
+          type: boolean
+          example: true
+          description: Check if you fed the cat.
+        meeted_at:
+          type: string
+          example: Outdoors.
+          description: Type of place where you met the cat, this field has 3 choices.
+
+
   #   Activation:
   #     type: object
   #     properties:
@@ -1063,74 +897,29 @@ components:
   #         maxLength: 254
   #     required:
   #       - current_password
-  #   TokenCreate:
-  #     type: object
-  #     properties:
-  #       password:
-  #         type: string
-  #       email:
-  #         type: string
-  #   TokenGetResponse:
-  #     type: object
-  #     properties:
-  #       auth_token:
-  #         type: string
-  #   RecipeCreateUpdate:
-  #     type: object
-  #     properties:
-  #       id:
-  #         type: integer
-  #         readOnly: true
-  #       ingredients:
-  #         description: Список ингредиентов
-  #         type: array
-  #         items:
-  #           example:
-  #             id: 1123
-  #             amount: 10
-  #           type: object
-  #           properties:
-  #             id:
-  #               description: 'Уникальный id'
-  #               type: integer
-  #             amount:
-  #               description: 'Количество в рецепте'
-  #               type: integer
-  #           required:
-  #             - id
-  #             - amount
-  #       tags:
-  #         description: 'Список id тегов'
-  #         type: array
-  #         example: [1, 2]
-  #         items:
-  #           type: integer
-  #       image:
-  #         description: 'Картинка, закодированная в Base64'
-  #         example: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg=='
-  #         type: string
-  #         format: binary
-  #       name:
-  #         description: 'Название'
-  #         type: string
-  #         maxLength: 200
-  #       text:
-  #         description: 'Описание'
-  #         type: string
-  #       cooking_time:
-  #         description: 'Время приготовления (в минутах)'
-  #         type: integer
-  #         minimum: 1
-  #     required:
-  #       - ingredients
-  #       - tags
-  #       - image
-  #       - name
-  #       - text
-  #       - cooking_time
+
+
+    TokenCreate:
+      type: object
+      properties:
+        username:
+          type: string
+          example: username123
+        password:
+          type: string
+          example: password123
+
+
+    TokenGetResponse:
+      type: object
+      properties:
+        auth_token:
+          type: string
+          example: 'Token <TOKENVALUE>'
+
 
     ValidationError:
-      description: Standart Validation Error.
+      description: Standart DRF Validation Error.
       type: object
       properties:
         field_name:
@@ -1139,55 +928,49 @@ components:
           type: array
           items:
             type: string
-  #   NestedValidationError:
-  #     description: Стандартные ошибки валидации DRF
-  #     type: object
-  #     properties:
-  #       ingredients:
-  #         description: 'Ошибки в ингредиентах. В приведенном примере в первом и третьем ингредиенте не было ошибок (amount >= 1), а во втором были.'
-  #         example: [{},{"amount":["Убедитесь, что это значение больше либо равно 1."]}, {}]
-  #         type: array
-  #         items:
-  #           type: object
-  #           properties:
-  #             amount:
-  #               type: array
-  #               items:
-  #                 type: string
 
-  #   SelfMadeError:
-  #     description: Ошибка
-  #     type: object
-  #     properties:
-  #       errors:
-  #         description: 'Описание ошибки'
-  #         type: string
 
-  #   AuthenticationError:
-  #     description: Пользователь не авторизован
-  #     type: object
-  #     properties:
-  #       detail:
-  #         description: 'Описание ошибки'
-  #         example: "Учетные данные не были предоставлены."
-  #         type: string
+    SelfFolowError:
+      description: Cannot follow your own profile.
+      type: object
+      properties:
+        errors:
+          description: 'Error description'
+          type: string
+          example: 'You cannot do this with you own profile.'
 
-  #   PermissionDenied:
-  #     description: Недостаточно прав
-  #     type: object
-  #     properties:
-  #       detail:
-  #         description: 'Описание ошибки'
-  #         example: "У вас недостаточно прав для выполнения данного действия."
-  #         type: string
-  #   NotFound:
-  #     description: Object is not found.
-  #     type: object
-  #     properties:
-  #       detail:
-  #         description: 'Error description.'
-  #         example: "Not found."
-  #         type: string
+
+    AuthenticationError:
+      description: User is unauthorized.
+      type: object
+      properties:
+        detail:
+          description: 'Error description.'
+          example: "Authentication credentials were not provided."
+          type: string
+
+
+    PermissionDenied:
+      description: Not enough rights.
+      type: object
+      properties:
+        detail:
+          description: 'Error description'
+          example: "You do not have permission to perform this action."
+          type: string
+
+
+    NotFound:
+      description: Object is not found.
+      type: object
+      properties:
+        detail:
+          description: 'Error description.'
+          example: "Not found."
+          type: string
+
+
+
 
   responses:
 
@@ -1197,40 +980,38 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationError'
-  #   NestedValidationError:
-  #     description: 'Ошибки валидации в стандартном формате DRF, в том числе с внутренними элементами.'
-  #     content:
-  #       application/json:
-  #         schema:
-  #           oneOf:
-  #             - $ref: '#/components/schemas/NestedValidationError'
-  #             - $ref: '#/components/schemas/ValidationError'
-
-  #   AuthenticationError:
-  #     description: Пользователь не авторизован
-  #     content:
-  #       application/json:
-  #         schema:
-  #           $ref: '#/components/schemas/AuthenticationError'
-
-  #   PermissionDenied:
-  #     description: Недостаточно прав
-  #     content:
-  #       application/json:
-  #         schema:
-  #           $ref: '#/components/schemas/PermissionDenied'
-
-  #   NotFound:
-  #     description: Object is not found.
-  #     content:
-  #       application/json:
-  #         schema:
-  #           $ref: '#/components/schemas/NotFound'
 
 
-  # securitySchemes:
-  #   Token:
-  #     description: 'Авторизация по токену. <br>
-  #     Все запросы от имени пользователя должны выполняться с заголовком "Authorization: Token TOKENVALUE"'
-  #     type: http
-  #     scheme: token
+    AuthenticationError:
+      description: User is unathorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthenticationError'
+
+
+    PermissionDenied:
+      description: Not enough rights.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PermissionDenied'
+
+
+    NotFound:
+      description: Object is not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFound'
+
+
+
+
+  securitySchemes:
+
+    Token:
+      description: 'Token authentication. <br>
+      All user requests must be made with the header: "Authorization: Token TOKENVALUE"'
+      type: http
+      scheme: token

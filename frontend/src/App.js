@@ -91,7 +91,7 @@ function App() {
         throw response
       })
       .then(data => {
-        setPosts(data)
+        setPosts(data.results)
       })
       .catch(error => {
         console.log(error);

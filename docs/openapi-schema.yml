@@ -200,8 +200,47 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /api/users/{id}/change_profile_picture/:
 
-  /api/users/{username}/follow/:
+    patch:
+      tags:
+        - User Detail
+      operationId: Picture edit
+      description: 'Allowed only for owner, in this endpoint user can only change his username and email.'
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Unique id of the user."
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                picture:
+                  type: string
+                  example: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg=='
+      responses:
+        '200':
+          description: 'User successfully updated.'
+          content:
+            application/json:
+              description: Success.
+              type: string
+              example: 'picture updated'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/users/{id}/follow/:
 
     post:
       tags:
@@ -211,12 +250,12 @@ paths:
       security:
         - Token: [ ]
       parameters:
-        - name: username
+        - name: id
           in: path
           required: true
-          description: "Unique username of the user."
+          description: "Unique id of the user."
           schema:
-            type: string
+            type: integer
       responses:
         '201':
           description: Follow object created successfully.

@@ -12,6 +12,7 @@ User = get_user_model()
 class ProfileSeriazlizer(serializers.ModelSerializer):
     """Profile serailizer for display only."""
 
+    picture = Base64ImageField()
     followers = serializers.SerializerMethodField()
     
     class Meta:

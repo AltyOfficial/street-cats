@@ -1,14 +1,22 @@
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from api.v1.serializers import UserSerializer
-from utils.permissions import IsCurrentUserOrReadOnly
+from utils.permissions import IsCurrentUserOrReadOnly, IsAuthorOrReadOnly
 
-from .models import Follow, Profile, User
+from .models import Follow, Profile
+
+
+from posts.models import Post
+
+
+User = get_user_model()
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -17,13 +25,11 @@ class UserViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
 
     def get_permissions(self):
-        if self.request.method == 'POST':
+        print(self.action)
+        if self.request.method == 'POST' and self.action == 'create':
             return (AllowAny(),)
 
-        elif self.request.method == 'DELETE' and self.action != 'follow':
-            return (IsAdminUser(),)
-
-        return (IsCurrentUserOrReadOnly(),)
+        return (IsAuthenticated(),)
 
     @action(
         methods=['GET'], detail=False,
@@ -37,12 +43,18 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=200)
     
-    @action(
-        methods=['POST', 'DELETE'], detail=False,
-        permission_classes=[IsAuthenticated]
-    )
-    def follow(self, request, *args, **kwargs):
-        user = get_object_or_404(User, username=kwargs['username'])
+    @action(methods=['GET',], detail=False)
+    def subscriptions(self, request):
+        follows = Follow.objects.filter(follower=request.user).values('author')
+        users = User.objects.filter(pk__in=follows)
+        # users = User.objects.filter(following__user=request.user)
+        serializer = UserSerializer(users, many=True, context={'request': request})
+
+        return Response(serializer.data, status=200)
+
+    @action(methods=['POST', 'DELETE'], detail=True,)
+    def follow(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
 
         if request.user == user:
             raise serializers.ValidationError(
@@ -61,3 +73,15 @@ class UserViewSet(viewsets.ModelViewSet):
         follow.delete()
 
         return Response(f'you unfollowed {user.username}', status=204)
+
+    @action(methods=['PATCH',], detail=True)
+    def change_profile_picture(self, request, pk):
+        
+        if request.user.id != int(pk):
+            raise PermissionDenied()
+
+        
+        print(Post.objects.first().image.path)
+        print(request.user.profile.picture)
+
+        return Response('')

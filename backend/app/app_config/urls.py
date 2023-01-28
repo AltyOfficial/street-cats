@@ -10,17 +10,6 @@ from rest_framework.permissions import AllowAny
 from .settings import BASE_DIR
 
 
-schema_view = get_schema_view(
-    openapi.Info(
-        title="FindYourTune API",
-        default_version='v1',
-        description="Dynamic Swagger API for FindYourTune Project",
-        contact=openapi.Contact(email="alty.official.prim@gmail.com"),
-    ),
-    public=True,
-    permission_classes=[AllowAny]
-)
-
 
 urlpatterns = [
     path(  # new

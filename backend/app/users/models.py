@@ -39,9 +39,9 @@ class Profile(models.Model):
 class Follow(models.Model):
     follower = models.ForeignKey(
         User, verbose_name='follower',
-        on_delete=models.CASCADE, related_name='following'
+        on_delete=models.CASCADE, related_name='follower'
     )
     author = models.ForeignKey(
         User, verbose_name='author',
-        on_delete=models.CASCADE, related_name='followers'
+        on_delete=models.CASCADE, related_name='following'
     )

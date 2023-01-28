@@ -54,11 +54,6 @@ class PostViewSet(viewsets.ModelViewSet):
         return Response(status=204)
 
 
-class ProfileViewSet(viewsets.ModelViewSet):
-    serializer_class = ProfileSeriazlizer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    queryset = Profile.objects.all()
-
 
 # {
 #     "caption": "test post caption 1",

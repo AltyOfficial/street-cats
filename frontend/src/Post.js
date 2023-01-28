@@ -123,7 +123,7 @@ function Post({ post, authToken, user }) {
       })
     }
 
-    fetch(BASE_URL + 'api/users/' + profile.username + '/follow/', requestOptions)
+    fetch(BASE_URL + 'api/users/' + profile.id + '/follow/', requestOptions)
     .then(response => {
       if (response.ok) {
         window.location.reload()
@@ -143,7 +143,7 @@ function Post({ post, authToken, user }) {
       })
     }
 
-    fetch(BASE_URL + 'api/users/' + profile.username + '/follow/', requestOptions)
+    fetch(BASE_URL + 'api/users/' + profile.id + '/follow/', requestOptions)
     .then(response => {
       if (response.ok) {
         window.location.reload()
@@ -245,7 +245,11 @@ function Post({ post, authToken, user }) {
                     <button
                       className='post_updateProfile'
                       onClick={() => {setopenUpdateProfile(true)}}
-                    >Update Profile</button>
+                    >Update Profile</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button
+                      className='post_updateProfile'
+                      onClick={() => {setopenUpdateProfile(true)}}
+                    >New picture</button>
                   </div>
                   ) : (
                   <div></div>

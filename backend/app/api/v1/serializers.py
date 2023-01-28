@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -12,7 +14,9 @@ User = get_user_model()
 class ProfileSeriazlizer(serializers.ModelSerializer):
     """Profile serailizer for display only."""
 
-    picture = Base64ImageField()
+    picture = Base64ImageField(required=False)
+    cats_meeted = serializers.IntegerField(read_only=True)
+    cats_feeded = serializers.IntegerField(read_only=True)
     followers = serializers.SerializerMethodField()
     
     class Meta:
@@ -23,6 +27,13 @@ class ProfileSeriazlizer(serializers.ModelSerializer):
 
     def get_followers(self, obj):
         return Follow.objects.filter(author=obj.user).count()
+    
+    def update(self, instance, validated_data):
+
+        if instance.picture != '' and instance.picture is not None:
+            os.remove(instance.picture.path)
+
+        return super().update(instance, validated_data)
 
 
 class UserSerializer(serializers.ModelSerializer):

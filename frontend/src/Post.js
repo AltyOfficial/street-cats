@@ -9,6 +9,7 @@ const BASE_URL = 'http://localhost:8000/'
 
 function Post({ post, authToken, user }) {
 
+  const [image, setImage] = useState('');
   const cat_feeded = post.feeded == true
   const djangoDate = post.pub_date
   const newDate = djangoDate.slice(0, 10).replace('-', '.').replace('-', '.')
@@ -84,6 +85,67 @@ function Post({ post, authToken, user }) {
         console.log(error);
         alert(error);
       })
+
+  }
+
+  const uploadImage = async (e) => {
+    const file = e.target.files[0]
+    const base64 = await base64Convertion(file)
+    setImage(base64)
+    console.log(base64)
+  }
+
+  const base64Convertion = (file) => {
+    return new Promise((resolve, reject) => {
+
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      // fileReader.onerror((error) => {
+      //   reject(error);
+      // });
+
+    });
+  }
+
+  const updateProfilePicture = (event) => {
+    event?.preventDefault();
+
+    if (image != '') {
+
+      const json_string = JSON.stringify({
+        'picture': image
+      })
+
+      const requestOptions = {
+        method: 'PATCH',
+        body: json_string,
+        headers: new Headers ({
+          'Authorization': 'Token ' + authToken,
+          'Content-Type': 'application/json'
+        })
+      }
+
+      fetch(BASE_URL + 'api/users/' + user.id + '/change_profile_picture/', requestOptions)
+      .then(response => {
+        if (response.ok) {
+          return response.json()
+        }
+        throw response
+      })
+      .then(data => {
+        window.location.reload()
+        window.scrollTo(0, 0)
+      })
+      .catch(error => {
+        console.log(error);
+        alert(error);
+      })
+
+    }
 
   }
 
@@ -209,8 +271,14 @@ function Post({ post, authToken, user }) {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
+              <div className="form-group mt-3">
+                <label>Upload profile picture.&nbsp;&nbsp;</label>
+                <input type='file' className='post_variable' onChange={(e) => {
+                  uploadImage(e)
+                }}/>
+              </div>
               <div className="d-grid gap-2 mt-3">
-                <button type="submit" className="btn btn-primary" onClick={updateProfile}>
+                <button type="submit" className="btn btn-primary" onClick={() => {updateProfile(); updateProfilePicture()}}>
                   Submit
                 </button>
               </div>
@@ -245,11 +313,7 @@ function Post({ post, authToken, user }) {
                     <button
                       className='post_updateProfile'
                       onClick={() => {setopenUpdateProfile(true)}}
-                    >Update Profile</button>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button
-                      className='post_updateProfile'
-                      onClick={() => {setopenUpdateProfile(true)}}
-                    >New picture</button>
+                    >Update Profile</button>
                   </div>
                   ) : (
                   <div></div>

@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, viewsets
@@ -7,7 +9,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
-from api.v1.serializers import UserSerializer
+from api.v1.serializers import ProfileSeriazlizer, UserSerializer
 from utils.permissions import IsCurrentUserOrReadOnly, IsAuthorOrReadOnly
 
 from .models import Follow, Profile
@@ -25,7 +27,6 @@ class UserViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
 
     def get_permissions(self):
-        print(self.action)
         if self.request.method == 'POST' and self.action == 'create':
             return (AllowAny(),)
 
@@ -76,12 +77,14 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['PATCH',], detail=True)
     def change_profile_picture(self, request, pk):
-        
+
         if request.user.id != int(pk):
             raise PermissionDenied()
 
-        
-        print(Post.objects.first().image.path)
-        print(request.user.profile.picture)
+        profile = Profile.objects.get(user=request.user)
 
-        return Response('')
+        serializer = ProfileSeriazlizer(profile, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response('picture updated', status=200)

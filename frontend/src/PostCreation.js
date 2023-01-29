@@ -93,49 +93,92 @@ function PostCreation({authToken}) {
   return (
     <div className='post_creation'>
 
-      <input
-        type='text'
-        id='fileInput'
-        placeholder='enter the title'
-        onChange={(event) => setCaption(event.target.value)}
-        value={caption}
-      />
-      <input
-        type='text'
-        className='post_variable'
-        id='fileInput'
-        placeholder='enter the text'
-        onChange={(event) => setText(event.target.value)}
-        value={text}
-      />
-      <div className='post_creation'>
-        <h6 className='post_variable'>Did you feed the cat?</h6>
-        <input
-          type="checkbox"
-          className='post_variable'
-          onChange={handleChangeFeeded}
-          value={feeded}
-        />
+      <div className="Auth-form-container">
+        <form className="Auth-form">
+          <div className="Auth-form-content">
+            <h3 className="Auth-form-title">Create Post</h3>
+            <div className="form-group mt-3">
+              <label>Caption</label>
+              <input
+                type="text"
+                className="form-control mt-1"
+                placeholder="caption"
+                onChange={(event) => setCaption(event.target.value)}
+                value={caption}
+              />
+            </div>
+            <div className="form-group mt-3">
+              <label>Text</label>
+              <textarea
+                type="text"
+                className="form-control mt-1"
+                placeholder="text"
+                rows='3'
+                onChange={(event) => setText(event.target.value)}
+                value={text}
+              />
+            </div>
+            <div className="form-group mt-3">
+              <label>Did you feed the cat?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yes&nbsp;</label>
+              <input
+                type="checkbox"
+                className="form-check-input"
+                onChange={handleChangeFeeded}
+                value={feeded}
+              />
+            </div>
+            <div className="form-group mt-3">
+              <label>Year season when you met the cat</label>
+              <select onChange={(event) => setSeason(event.target.value)} defaultValue={'DEFAULT'} className='form-select' aria-label="Default select example">
+                <option value="DEFAULT" disabled>Season</option>
+                <option value="Summer">Summer</option>
+                <option value="Autumn">Autumn</option>
+                <option value="Winter">Winter</option>
+                <option value="Spring">Spring</option>
+              </select>
+              {/* <textarea
+                type="text"
+                className="form-control mt-1"
+                placeholder="text"
+                rows='3'
+                onChange={(event) => setText(event.target.value)}
+                value={text}
+              /> */}
+            </div>
+            <div className="form-group mt-3">
+              <label>Type of place where you met the cat</label>
+                <select onChange={(event) => setMeetedAt(event.target.value)} defaultValue={'DEFAULT'} className='form-select'>
+                <option value="DEFAULT" disabled>Place</option>
+                <option value="Outdoors">Outdoors</option>
+                <option value="Indoors">Indoors</option>
+                <option value="Mixed">Mixed</option>
+              </select>
+            </div>
+            <div className="form-group mt-3">
+              <label for="formFile" class="form-label">Image</label>
+              <input type='file' className='form-control' id="formFile" onChange={(e) => {
+                uploadImage(e)
+              }}/>
+            </div>
+            <br></br>
+            <div className="d-grid gap-2 mt-3">
+              <button type="submit" className="btn btn-primary" onClick={createPost}>
+                Create Post
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
-      <select onChange={(event) => setSeason(event.target.value)} defaultValue={'DEFAULT'} className='post_variable'>
-        <option value="DEFAULT" disabled>Season</option>
-        <option value="Summer">Summer</option>
-        <option value="Autumn">Autumn</option>
-        <option value="Winter">Winter</option>
-        <option value="Spring">Spring</option>
-      </select>
-      <select onChange={(event) => setMeetedAt(event.target.value)} defaultValue={'DEFAULT'} className='post_variable'>
-        <option value="DEFAULT" disabled>Place where you met the cat</option>
-        <option value="Outdoors">Outdoors</option>
-        <option value="Indoors">Indoors</option>
-        <option value="Mixed">Mixed</option>
-      </select>
+
+      {/* 
+
+
       <input type='file' className='post_variable' onChange={(e) => {
         uploadImage(e)
       }}/>
       <Button className='imageUploadButton' onClick={createPost}>
         Create Post
-      </Button>
+      </Button> */}
     </div>
   )
 }

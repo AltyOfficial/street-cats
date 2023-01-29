@@ -37,7 +37,7 @@ class ProfileSeriazlizer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
 
-        if instance.picture != '' and instance.picture is not None:
+        if instance.picture != '':
             os.remove(instance.picture.path)
 
         return super().update(instance, validated_data)

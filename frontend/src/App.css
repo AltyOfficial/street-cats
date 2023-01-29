@@ -115,7 +115,7 @@ label {
 }
 
 
-.fg {
+.followingContent {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -125,11 +125,80 @@ label {
 }
 
 
-.gf {
+.followingContainer {
   width: 600px;
   box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
   padding-top: 30px;
   padding-bottom: 20px;
   border-radius: 8px;
   background-color: white;
+}
+
+
+.followingButton {
+  border-radius: 8px;
+  padding: 7px;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  border: 1px solid rgb(0, 0, 0);
+  transition-duration: 0.15s;
+  width: 180px;
+}
+
+.followingButton:hover {
+    background-color: rgb(8, 8, 8);
+    color: white;
+}
+
+
+.postCreateButton {
+  position: relative;
+  left: 50%;
+  margin: -70px 0 0 -70px;
+  border-radius: 8px;
+  padding: 7px;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  border: 1px solid rgb(0, 0, 0);
+  transition-duration: 0.15s;
+  width: 140px;
+}
+
+
+.postCreateButton:hover {
+  background-color: rgb(8, 8, 8);
+  color: white;
+}
+
+
+.profile-container-none {
+  padding: 20px;
+}
+
+
+.followingNoneContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+
+.followingNoneContent {
+  width: 600px;
+  box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  border-radius: 8px;
+  background-color: white;
+}
+
+
+.followingNoneContentText {
+  margin-left: 25px;
+  display: flex;
+  align-items: initial;
 }

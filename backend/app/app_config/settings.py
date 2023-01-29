@@ -2,11 +2,11 @@ from pathlib import Path
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
-print(BASE_DIR)
 
 SECRET_KEY = 'django-insecure-tdh5613hqez!6xo54d3)0qdcofnj2mc%ol0%8(#2dksa-28+1m'
 
 DEBUG = True
+
 
 ALLOWED_HOSTS = ['*']
 

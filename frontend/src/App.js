@@ -72,6 +72,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [followingProfiles, setfollowingProfiles] = useState([]);
   const [openFollowing, setOpenFollowing] = useState(false);
+  const [openPostCreation, setOpenPostCreation] = useState(false);
   const followingEmpty = followingProfiles.length != 0
 
   useEffect(() => {
@@ -357,22 +358,38 @@ function App() {
 
       </Modal>
 
+      <Modal open={openPostCreation} onClose={() => setOpenPostCreation(false)}>
+        {
+          authToken ? (
+            <PostCreation
+              authToken={authToken}
+            />
+          ) : (
+            <h3></h3>
+          )
+        }
+      </Modal>
+
       <Modal open={openFollowing} onClose={() => setOpenFollowing(false)}  className='modal-body'>
 
-      {followingEmpty ? (
-          <div className="fg">
-            <div className="gf">
-              {
-                followingProfiles.map(profile => (
-                  <Profile profile={profile} authToken={authToken}/>
-                ))
-              }
+        {followingEmpty ? (
+            <div className="followingContent">
+              <div className="followingContainer">
+                {
+                  followingProfiles.map(profile => (
+                    <Profile profile={profile} authToken={authToken}/>
+                  ))
+                }
+              </div>
             </div>
-          </div>
-        ) : (
-          <div>FALSE</div>
-        )
-      }
+          ) : (
+            <div className="followingNoneContainer">
+              <div className="followingNoneContent">
+                <h3 className="followingNoneContentText">Your follow list is empty</h3>
+              </div>
+            </div>
+          )
+        }
 
       </Modal>
 
@@ -382,7 +399,7 @@ function App() {
           src='http://127.0.0.1:8000/media/StreetCatsLogo.svg'
         />
         <div>
-          <button onClick={() => {fetchProfiles(); setOpenFollowing(true)}}>PROFILES</button>
+          <button className='followingButton' onClick={() => {fetchProfiles(); setOpenFollowing(true)}}>Your following users</button>
         </div>
         <div className='app_headerRightMenu'>
           {authToken ? (
@@ -404,11 +421,9 @@ function App() {
       <div className="app_post_creation">
         {
           authToken ? (
-            <PostCreation
-              authToken={authToken}
-            />
+            <button className='postCreateButton' onClick={() => setOpenPostCreation(true)}>Create Post</button>
           ) : (
-            <h3>You need to log in to upload</h3>
+            <h3></h3>
           )
         }
       </div>

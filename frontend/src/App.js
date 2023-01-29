@@ -6,6 +6,7 @@ import './App.css';
 
 import Post from './Post.js'
 import PostCreation from './PostCreation.js'
+import Profile from './Profile.js'
 
 
 const BASE_URL = 'http://localhost:8000/'
@@ -64,13 +65,14 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [openLogIn, setOpenLogIn] = useState(false);
   const [openSignUp, setOpenSignUp] = useState(false);
-  const [openProfile, setOpenProfile] = useState(false);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [authToken, setAuthToken] = useState(null);
   const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
+  const [followingProfiles, setfollowingProfiles] = useState([]);
+  const [openFollowing, setOpenFollowing] = useState(false);
+  const followingEmpty = followingProfiles.length != 0
 
   useEffect(() => {
     setAuthToken(localStorage.getItem('authToken'));
@@ -189,30 +191,39 @@ function App() {
     setUsername('')
   }
 
-  // const getProfile = (user_id) => {
-  //   const requestOptions = {
-  //     method: 'GET',
-  //     headers: new Headers ({
-  //       'Authorization': 'Token ' + authToken
-  //     })
-  //   }
+  const fetchProfiles = () => {
+    console.log(followingEmpty)
+    console.log(authToken)
+    
+    const requestOptions = {
+      method: 'GET',
+      headers: new Headers ({
+        'Authorization': 'Token ' + authToken,
+        'Content-Type': 'application/json'
+      })
+    }
 
-  //   fetch(BASE_URL + 'api/users/' + user_id + '/', requestOptions)
-  //     .then(response => {
-  //       const json = response.json()
-  //       console.log(json)
-  //       if (response.ok) {
-  //         return json
-  //       }
-  //       throw response
-  //     })
-  //     .then(data => {
-  //       setProfile(data);
-  //     })
-  //     .catch(error => {
-  //       console.log(error);
-  //     })
-  // }
+    fetch(BASE_URL + 'api/users/subscriptions/', requestOptions)
+    .then(response => {
+      const json = response.json();
+      if (response.ok) {
+        return json;
+      }
+      throw response
+    })
+    .then(data => {
+      console.log(followingEmpty)
+      setfollowingProfiles(data);
+      console.log(followingEmpty)
+      console.log(followingProfiles)
+    })
+    .catch(error => {
+      console.log(error);
+    })
+
+
+
+  }
 
   const get_user = (authToken) => {
 
@@ -346,11 +357,33 @@ function App() {
 
       </Modal>
 
+      <Modal open={openFollowing} onClose={() => setOpenFollowing(false)}  className='modal-body'>
+
+      {followingEmpty ? (
+          <div className="fg">
+            <div className="gf">
+              {
+                followingProfiles.map(profile => (
+                  <Profile profile={profile} authToken={authToken}/>
+                ))
+              }
+            </div>
+          </div>
+        ) : (
+          <div>FALSE</div>
+        )
+      }
+
+      </Modal>
+
       <div className='app_header'>
         <img className='app_headerLogo'
           alt='StreetCats Logo'
           src='http://127.0.0.1:8000/media/StreetCatsLogo.svg'
         />
+        <div>
+          <button onClick={() => {fetchProfiles(); setOpenFollowing(true)}}>PROFILES</button>
+        </div>
         <div className='app_headerRightMenu'>
           {authToken ? (
             <div className="app_headerRightMenuLoggedIn">
@@ -379,7 +412,7 @@ function App() {
           )
         }
       </div>
-
+      
       <div className="app_posts">
         {
           posts.map(post => (

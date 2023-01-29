@@ -1,0 +1,25 @@
+.profile-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 20px;
+}
+
+
+.profile-headerInfo {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 10px;
+}
+
+
+.text-follows-true {
+    color: rgb(24, 158, 24);
+}
+
+
+.text-follows-false {
+    color: rgb(158, 24, 24);
+}

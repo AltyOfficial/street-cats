@@ -683,6 +683,10 @@ components:
               type: integer
               example: 80
               description: "Number of followers."
+            following_you:
+              type: boolean
+              example: true
+              description: "Check if this user follows you as well."
 
 
     CustomUserCreate:

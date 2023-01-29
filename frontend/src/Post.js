@@ -254,7 +254,7 @@ function Post({ post, authToken, user }) {
               <div className="form-group mt-3">
                 <label>Username.&nbsp;&nbsp;</label><text className='text-color-and-size'>Current username is "{user.username}"</text>
                 <input
-                  type="email"
+                  type="text"
                   className="form-control mt-1"
                   placeholder="username"
                   // value={user.username}

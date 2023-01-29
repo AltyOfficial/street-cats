@@ -11,6 +11,14 @@
 }
 
 
+.modal-body {
+  height: auto;       /* allow to fit content (if smaller)... */
+  max-height: 100%;   /* ... but make sure it does not overflow browser window */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+
 input::placeholder {
   color:#c53e3e;
 }
@@ -104,4 +112,24 @@ label {
 
 .app_post_creation {
   padding: 20px;
+}
+
+
+.fg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  width: 100vw;
+  /* wheight: 100vh; */
+}
+
+
+.gf {
+  width: 600px;
+  box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  border-radius: 8px;
+  background-color: white;
 }

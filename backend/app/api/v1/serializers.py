@@ -18,15 +18,22 @@ class ProfileSeriazlizer(serializers.ModelSerializer):
     cats_meeted = serializers.IntegerField(read_only=True)
     cats_feeded = serializers.IntegerField(read_only=True)
     followers = serializers.SerializerMethodField()
+    following_you = serializers.SerializerMethodField()
     
     class Meta:
         model = Profile
         fields = (
-            'picture', 'cats_meeted', 'cats_feeded', 'created', 'followers'
+            'picture', 'cats_meeted', 'cats_feeded',
+            'created', 'followers', 'following_you'
         )
 
     def get_followers(self, obj):
         return Follow.objects.filter(author=obj.user).count()
+    
+    def get_following_you(self, obj):
+        return Follow.objects.filter(
+            follower=obj.user, author=self.context.get('request').user.id
+        ).exists()
     
     def update(self, instance, validated_data):
 

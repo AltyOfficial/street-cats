@@ -1,5 +1,3 @@
-import os
-
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, viewsets
@@ -9,11 +7,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
-from api.v1.serializers import ProfileSeriazlizer, UserSerializer
+from api.v1.serializers import (ChangePassowrdValidator,
+                                ProfileSeriazlizer, UserSerializer)
 from utils.permissions import IsCurrentUserOrReadOnly, IsAuthorOrReadOnly
 
 from .models import Follow, Profile
-
 
 from posts.models import Post
 
@@ -32,10 +30,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return (IsAuthenticated(),)
 
-    @action(
-        methods=['GET'], detail=False,
-        permission_classes=[IsAuthenticated]
-    )
+    @action(methods=['GET'], detail=False, permission_classes=[IsAuthenticated])
     def me(self, request):
         user = get_object_or_404(User, pk=request.user.id)
         serializer = self.get_serializer(user, data=request.data, partial=True)
@@ -49,7 +44,9 @@ class UserViewSet(viewsets.ModelViewSet):
         follows = Follow.objects.filter(follower=request.user).values('author')
         users = User.objects.filter(pk__in=follows)
         # users = User.objects.filter(following__user=request.user)
-        serializer = UserSerializer(users, many=True, context={'request': request})
+        serializer = UserSerializer(
+            users, many=True, context={'request': request}
+        )
 
         return Response(serializer.data, status=200)
 
@@ -75,11 +72,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return Response(f'you unfollowed {user.username}', status=204)
 
-    @action(methods=['PATCH',], detail=True)
-    def change_profile_picture(self, request, pk):
-
-        if request.user.id != int(pk):
-            raise PermissionDenied()
+    @action(methods=['PATCH',], detail=False)
+    def change_profile_picture(self, request):
 
         profile = Profile.objects.get(user=request.user)
 
@@ -88,3 +82,22 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save()
 
         return Response('picture updated', status=200)
+    
+    @action(methods=['POST'], detail=False)
+    def set_password(self, request):
+        user = self.request.user
+        serializer = ChangePassowrdValidator(data=request.data)
+
+        if serializer.is_valid():
+            old_password = serializer.data.get('current_password')
+
+            if not user.check_password(old_password):
+                return Response(
+                    {'current_password': 'Wrong Password'}, status=400
+                )
+            
+            user.set_password(serializer.data.get('new_password'))
+            user.save()
+            return Response(status=204)
+        
+        return Response(serializer.errors, status=400)

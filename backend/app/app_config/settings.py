@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'api.v1.apps.ApiV1Config',
     'posts.apps.PostsConfig',
     'users.apps.UsersConfig',
+    'django_filters',
 ]
 
 

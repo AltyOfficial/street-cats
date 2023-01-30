@@ -136,14 +136,6 @@ function PostCreation({authToken}) {
                 <option value="Winter">Winter</option>
                 <option value="Spring">Spring</option>
               </select>
-              {/* <textarea
-                type="text"
-                className="form-control mt-1"
-                placeholder="text"
-                rows='3'
-                onChange={(event) => setText(event.target.value)}
-                value={text}
-              /> */}
             </div>
             <div className="form-group mt-3">
               <label>Type of place where you met the cat</label>
@@ -170,15 +162,6 @@ function PostCreation({authToken}) {
         </form>
       </div>
 
-      {/* 
-
-
-      <input type='file' className='post_variable' onChange={(e) => {
-        uploadImage(e)
-      }}/>
-      <Button className='imageUploadButton' onClick={createPost}>
-        Create Post
-      </Button> */}
     </div>
   )
 }

@@ -129,7 +129,7 @@ function Post({ post, authToken, user }) {
         })
       }
 
-      fetch(BASE_URL + 'api/users/' + user.id + '/change_profile_picture/', requestOptions)
+      fetch(BASE_URL + 'api/users/' + 'change_profile_picture/', requestOptions)
       .then(response => {
         if (response.ok) {
           return response.json()
@@ -342,7 +342,7 @@ function Post({ post, authToken, user }) {
               </div>
               ) : (
               <div>
-                <h5 className='profileInfo'>You can't view other people profiles while not registered</h5>
+                <h5 className='profileInfo'>You need to login to view profiles</h5>
               </div>
               )
             }

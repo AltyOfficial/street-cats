@@ -12,30 +12,6 @@ import Profile from './Profile.js'
 const BASE_URL = 'http://localhost:8000/'
 
 
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
-
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    backgroundColor: theme.palette.background.paper,
-    position: 'absolute',
-    width: 400,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3)
-  }
-}))
-
-
 function App() {
 
   let base64code = '';
@@ -58,9 +34,6 @@ function App() {
     }
     console.log(reader.result);
   }
-
-  const classes = useStyles();
-  const [modalStyle, setModalStyle] = useState(getModalStyle);
 
   const [posts, setPosts] = useState([]);
   const [openLogIn, setOpenLogIn] = useState(false);
@@ -221,9 +194,6 @@ function App() {
     .catch(error => {
       console.log(error);
     })
-
-
-
   }
 
   const get_user = (authToken) => {
@@ -303,9 +273,7 @@ function App() {
                   Submit
                 </button>
               </div>
-              <p className="text-center mt-2">
-                Forgot <a href="#">password?</a>
-              </p>
+              <br></br>
             </div>
           </form>
         </div>
@@ -349,9 +317,7 @@ function App() {
                   Submit
                 </button>
               </div>
-              <p className="text-center mt-2">
-                Forgot <a href="#">password?</a>
-              </p>
+              <br></br>
             </div>
           </form>
         </div>

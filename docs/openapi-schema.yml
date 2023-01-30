@@ -78,27 +78,6 @@ paths:
           $ref: '#/components/responses/ValidationError'
 
 
-#   /api/users/set_password/:
-#     post:
-#       operationId: Изменение пароля
-#       description: 'Изменение пароля текущего пользователя'
-#       parameters: []
-#       requestBody:
-#         content:
-#           application/json:
-#             schema:
-#               $ref: '#/components/schemas/SetPassword'
-#       responses:
-#         '204':
-#           description: 'Пароль успешно изменен'
-#         '400':
-#           $ref: '#/components/responses/ValidationError'
-#         '401':
-#           $ref: '#/components/responses/AuthenticationError'
-#       tags:
-#         - Пользователи
-
-
   /api/users/me/:
 
     get:
@@ -116,6 +95,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+
+
+  /api/users/set_password/:
+    post:
+      tags:
+        - Users
+      operationId: Change password
+      description: 'Change password of a current user.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetPassword'
+      responses:
+        '204':
+          description: 'Password updated.'
+        '400':
+          $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/AuthenticationError'
 
@@ -200,22 +200,15 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/users/{id}/change_profile_picture/:
+  /api/users/change_profile_picture/:
 
     patch:
       tags:
         - User Detail
-      operationId: Picture edit
-      description: 'Allowed only for owner, in this endpoint user can only change his username and email.'
+      operationId: Picture update
+      description: 'Change profile picture of the current user.'
       security:
         - Token: [ ]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: "Unique id of the user."
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -339,9 +332,18 @@ paths:
             type: array
             items:
               type: string
+        - name: place
+          required: false
+          in: query
+          description: Showing posts only with the specified places.
+          example: 'Outdoors&place=Mixed'
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         '200':
-          description: ''
+          description: 'Success.'
           content:
             application/json:
               schema:
@@ -881,67 +883,6 @@ components:
           description: Type of place where you met the cat, this field has 3 choices.
 
 
-  #   Activation:
-  #     type: object
-  #     properties:
-  #       uid:
-  #         type: string
-  #       token:
-  #         type: string
-  #     required:
-  #       - uid
-  #       - token
-  #   SendEmailReset:
-  #     type: object
-  #     properties:
-  #       email:
-  #         type: string
-  #         format: email
-  #     required:
-  #       - email
-  #   PasswordResetConfirm:
-  #     type: object
-  #     properties:
-  #       uid:
-  #         type: string
-  #       token:
-  #         type: string
-  #       new_password:
-  #         type: string
-  #     required:
-  #       - uid
-  #       - token
-  #       - new_password
-  #   UsernameResetConfirm:
-  #     type: object
-  #     properties:
-  #       new_email:
-  #         type: string
-  #         format: email
-  #         maxLength: 254
-  #   SetPassword:
-  #     type: object
-  #     properties:
-  #       new_password:
-  #         type: string
-  #       current_password:
-  #         type: string
-  #     required:
-  #       - new_password
-  #       - current_password
-  #   SetUsername:
-  #     type: object
-  #     properties:
-  #       current_password:
-  #         type: string
-  #       new_email:
-  #         type: string
-  #         format: email
-  #         maxLength: 254
-  #     required:
-  #       - current_password
-
-
     TokenCreate:
       type: object
       properties:
@@ -959,6 +900,18 @@ components:
         auth_token:
           type: string
           example: 'Token <TOKENVALUE>'
+
+
+    SetPassword:
+      type: object
+      properties:
+        current_password:
+          type: string
+        new_password:
+          type: string
+      required:
+        - new_password
+        - current_password
 
 
     ValidationError:

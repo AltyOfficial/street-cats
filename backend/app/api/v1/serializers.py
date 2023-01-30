@@ -1,6 +1,6 @@
 import os
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, password_validation
 from rest_framework import serializers
 
 from posts.models import Post, Season
@@ -56,6 +56,12 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
+
+        if len(validated_data.get('password')) < 8:
+            raise serializers.ValidationError(
+                'Passowrd is too short. It must contain at least 8 symbols.'
+            )
+
         user = User(
             email=validated_data['email'],
             username=validated_data['username']
@@ -114,3 +120,14 @@ class PostCreationSerializer(serializers.ModelSerializer):
     
     def get_rating(self, obj):
         return str(obj.upvotes.count() - obj.downvotes.count())
+
+
+class ChangePassowrdValidator(serializers.Serializer):
+    """Change user's password."""
+
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_new_password(self, value):
+        password_validation.validate_password(value)
+        return value

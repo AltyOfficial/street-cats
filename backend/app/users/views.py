@@ -2,18 +2,14 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from api.v1.serializers import (ChangePassowrdValidator,
                                 ProfileSeriazlizer, UserSerializer)
-from utils.permissions import IsCurrentUserOrReadOnly, IsAuthorOrReadOnly
 
 from .models import Follow, Profile
-
-from posts.models import Post
 
 
 User = get_user_model()
@@ -30,7 +26,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return (IsAuthenticated(),)
 
-    @action(methods=['GET'], detail=False, permission_classes=[IsAuthenticated])
+    @action(methods=['GET'], detail=False)
     def me(self, request):
         user = get_object_or_404(User, pk=request.user.id)
         serializer = self.get_serializer(user, data=request.data, partial=True)
@@ -38,7 +34,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save()
 
         return Response(serializer.data, status=200)
-    
+
     @action(methods=['GET',], detail=False)
     def subscriptions(self, request):
         follows = Follow.objects.filter(follower=request.user).values('author')
@@ -66,7 +62,7 @@ class UserViewSet(viewsets.ModelViewSet):
             )
 
             return Response(f'you followed {user.username}', status=201)
-        
+
         follow = get_object_or_404(Follow, follower=request.user, author=user)
         follow.delete()
 
@@ -82,7 +78,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save()
 
         return Response('picture updated', status=200)
-    
+
     @action(methods=['POST'], detail=False)
     def set_password(self, request):
         user = self.request.user
@@ -95,9 +91,9 @@ class UserViewSet(viewsets.ModelViewSet):
                 return Response(
                     {'current_password': 'Wrong Password'}, status=400
                 )
-            
+
             user.set_password(serializer.data.get('new_password'))
             user.save()
             return Response(status=204)
-        
+
         return Response(serializer.errors, status=400)

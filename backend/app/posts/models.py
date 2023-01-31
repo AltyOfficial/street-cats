@@ -8,21 +8,12 @@ User = get_user_model()
 class Season(models.Model):
     """Seasong for creating a post."""
 
-    title = models.CharField(
-        verbose_name='title', max_length=255,
-        blank=False, null=False, unique=True
-    )
-    color = models.CharField(
-        verbose_name='color', max_length=7,
-        blank=False, null=False,
-    )
-    slug = models.SlugField(
-        verbose_name='slug', max_length=50, 
-        blank=False, null=False, unique=True
-    )
+    title = models.CharField(verbose_name='title', max_length=255, unique=True)
+    color = models.CharField(verbose_name='color', max_length=7,)
+    slug = models.SlugField(verbose_name='slug', max_length=50, unique=True)
 
     class Meta:
-        ordering = ('id',)
+        ordering = ('title',)
         verbose_name = 'Season'
         verbose_name_plural = 'Seasons'
 
@@ -40,20 +31,16 @@ class Post(models.Model):
     )
 
     author = models.ForeignKey(
-        User, verbose_name='author', 
+        User, verbose_name='author',
         on_delete=models.CASCADE, related_name='posts'
     )
     caption = models.CharField(max_length=200, verbose_name='caption')
-    text = models.TextField(verbose_name='text')
-    image = models.ImageField(
-        verbose_name='image', upload_to='posts/images/',
-        blank=False, null=False
-    )
+    text = models.TextField(verbose_name='text', blank=True)
+    image = models.ImageField(verbose_name='image', upload_to='posts/images/',)
     meeted_at = models.CharField(max_length=20, choices=CHOICES)
     season = models.ForeignKey(
-        Season, verbose_name='season', default='-empty-',
-        on_delete=models.SET_DEFAULT, related_name='posts',
-        blank=False, null=False
+        Season, verbose_name='season', on_delete=models.SET_NULL,
+        related_name='posts', null=True
     )
     feeded = models.BooleanField(default=False)
     upvotes = models.ManyToManyField(
@@ -68,9 +55,6 @@ class Post(models.Model):
         ordering = ('-pub_date',)
         verbose_name = 'Post'
         verbose_name_plural = 'Posts'
-    
-    def __str__(self) -> str:
+
+    def __str__(self):
         return self.caption
-    
-    def get_like_number(self):
-        return 'zero'

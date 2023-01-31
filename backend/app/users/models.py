@@ -13,14 +13,14 @@ class User(AbstractUser):
         ordering = ['id']
         verbose_name = 'User'
         verbose_name_plural = 'Users'
-    
+
     def __str__(self):
         return self.username
 
 
 class Profile(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key='profile'
+        User, on_delete=models.CASCADE, related_name='profile'
     )
     picture = models.ImageField(
         upload_to='users/profile_pictures/',
@@ -31,11 +31,11 @@ class Profile(models.Model):
     created = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:
-        ordering = ('-created',)
+        ordering = ['-created']
         verbose_name = 'Profile'
         verbose_name_plural = 'Profiles'
-    
-    def __str__(self) -> str:
+
+    def __str__(self):
         return self.user.username
 
 
@@ -48,3 +48,12 @@ class Follow(models.Model):
         User, verbose_name='author',
         on_delete=models.CASCADE, related_name='following'
     )
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['follower']
+        verbose_name = 'Follow'
+        verbose_name_plural = 'Follows'
+
+    def __str__(self):
+        return self.created

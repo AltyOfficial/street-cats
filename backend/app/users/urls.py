@@ -7,8 +7,5 @@ router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='users')
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('users/<username>/follow/', UserViewSet.as_view(
-        {'post': 'follow', 'delete': 'follow'})
-    )
+    path('', include(router.urls))
 ]

@@ -19,7 +19,7 @@ class ProfileSeriazlizer(serializers.ModelSerializer):
     cats_feeded = serializers.IntegerField(read_only=True)
     followers = serializers.SerializerMethodField()
     following_you = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = Profile
         fields = (
@@ -29,12 +29,12 @@ class ProfileSeriazlizer(serializers.ModelSerializer):
 
     def get_followers(self, obj):
         return Follow.objects.filter(author=obj.user).count()
-    
+
     def get_following_you(self, obj):
         return Follow.objects.filter(
             follower=obj.user, author=self.context.get('request').user.id
         ).exists()
-    
+
     def update(self, instance, validated_data):
 
         if instance.picture != '':
@@ -111,13 +111,13 @@ class PostCreationSerializer(serializers.ModelSerializer):
             author=author, season=season, **validated_data
         )
         return post
-    
+
     def update(self, instance, validated_data):
         if 'season' in validated_data:
             season_input = validated_data.pop('season')
             validated_data['season'] = Season.objects.get(title=season_input)
         return super().update(instance, validated_data)
-    
+
     def get_rating(self, obj):
         return str(obj.upvotes.count() - obj.downvotes.count())
 

@@ -9,7 +9,7 @@ import PostCreation from './PostCreation.js'
 import Profile from './Profile.js'
 
 
-const BASE_URL = 'http://localhost:8000/'
+const BASE_URL = 'http://127.0.0.1/'
 
 
 function App() {
@@ -226,7 +226,9 @@ function App() {
   return (
     <div className='app'>
 
-      <Modal open={openSignUp} onClose={() => setOpenSignUp(false)}>
+      <h2>HELLO THERE</h2>
+
+      {/* <Modal open={openSignUp} onClose={() => setOpenSignUp(false)}>
 
         <div className="Auth-form-container">
           <form className="Auth-form">
@@ -357,17 +359,17 @@ function App() {
           )
         }
 
-      </Modal>
+      </Modal> */}
 
       <div className='app_header'>
-        <img className='app_headerLogo'
+        {/* <img className='app_headerLogo'
           alt='StreetCats Logo'
-          src='http://127.0.0.1:8000/media/StreetCatsLogo.svg'
+          src='http://127.0.0.1/media/StreetCatsLogo.svg'
         />
         <div>
           <button className='followingButton' onClick={() => {fetchProfiles(); setOpenFollowing(true)}}>Your following users</button>
-        </div>
-        <div className='app_headerRightMenu'>
+        </div> */}
+        {/* <div className='app_headerRightMenu'>
           {authToken ? (
             <div className="app_headerRightMenuLoggedIn">
               <Button onClick={() => signOut()}>Logout</Button>
@@ -381,10 +383,10 @@ function App() {
               </div>
             )
           }
-        </div>
+        </div> */}
       </div>
       
-      <div className="app_post_creation">
+      {/* <div className="app_post_creation">
         {
           authToken ? (
             <button className='postCreateButton' onClick={() => setOpenPostCreation(true)}>Create Post</button>
@@ -400,7 +402,7 @@ function App() {
             <Post post={post} authToken={authToken} user={user} />
           ))
         }
-      </div>
+      </div> */}
 
     </div>
   );

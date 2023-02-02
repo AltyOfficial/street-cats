@@ -5,7 +5,7 @@ import { Button, Modal, makeStyles, Input } from '@material-ui/core';
 import './PostCreation.css'
 
 
-const BASE_URL = 'http://localhost:8000/'
+const BASE_URL = 'http://127.0.0.1/'
 
 
 function PostCreation({authToken}) {

@@ -4,12 +4,12 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-env_path = Path(BASE_DIR / 'infra') / '.env'
+env_path = Path('../infra') / '.env'
 load_dotenv(dotenv_path=env_path)
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-tdh5613hqez!6xo54d3)0qdcofnj2mc%ol0%8(#2dksa-28+1m')
 
 DEBUG = True
 
@@ -38,6 +38,9 @@ INSTALLED_APPS = [
 ]
 
 
+CSRF_TRUSTED_ORIGINS=['http://localhost', 'http://127.0.0.1']
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -56,7 +59,7 @@ ROOT_URLCONF = 'app_config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR, 'backend/templates/'],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,12 +78,12 @@ WSGI_APPLICATION = 'app_config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE'),
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', default='streetcats'),
+        'USER': os.getenv('POSTGRES_USER', default='postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='Creat1veCloud'),
+        'HOST': os.getenv('DB_HOST', default='db'),
+        # 'PORT': os.getenv('DB_PORT', default='5432'),
     }
 }
 
@@ -111,13 +114,13 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'backend/static'
-STATICFILES_DIRS = (
-    BASE_DIR / 'docs/',
-)
+STATIC_ROOT = BASE_DIR / 'static'
+# STATICFILES_DIRS = (
+#     BASE_DIR / 'docs/',
+# )
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'backend/media'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 REST_FRAMEWORK = {

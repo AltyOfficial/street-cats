@@ -18,24 +18,17 @@ function PostCreation({authToken}) {
   const [image, setImage] = useState('');
 
   const handleChangeFeeded = event => {
-
-    if (event.target.checked) {
-      console.log('✅ Checkbox is checked');
-    } else {
-      console.log('⛔️ Checkbox is NOT checked');
-    }
     setFeeded(current => !current);
-
   };
 
   const uploadImage = async (e) => {
     const file = e.target.files[0]
     const base64 = await base64Convertion(file)
     setImage(base64)
-    console.log(base64)
   }
 
   const base64Convertion = (file) => {
+    console.log(file);
     return new Promise((resolve, reject) => {
 
       const fileReader = new FileReader();

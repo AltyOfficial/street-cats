@@ -9,7 +9,7 @@ import PostCreation from './PostCreation.js'
 import Profile from './Profile.js'
 
 
-const BASE_URL = 'http://127.0.0.1/'
+const BASE_URL = 'http://127.0.0.1:8000/'
 
 
 function App() {
@@ -58,9 +58,6 @@ function App() {
     fetch(BASE_URL + 'api/v1/posts/')
       .then(response => {
         const json = response.json()
-        console.log(user)
-        console.log(user)
-        console.log(user)
         if (response.ok) {
           return json
         }
@@ -329,6 +326,7 @@ function App() {
           authToken ? (
             <PostCreation
               authToken={authToken}
+              BASE_URL={BASE_URL}
             />
           ) : (
             <h3></h3>
@@ -343,7 +341,7 @@ function App() {
               <div className="followingContainer">
                 {
                   followingProfiles.map(profile => (
-                    <Profile profile={profile} authToken={authToken}/>
+                    <Profile profile={profile} authToken={authToken} BASE_URL={BASE_URL}/>
                   ))
                 }
               </div>
@@ -362,7 +360,7 @@ function App() {
       <div className='app_header'>
         <img className='app_headerLogo'
           alt='StreetCats Logo'
-          src='http://127.0.0.1/media/StreetCatsLogo.svg'
+          src={BASE_URL + 'media/StreetCatsLogo.svg'}
         />
         <div>
           <button className='followingButton' onClick={() => {fetchProfiles(); setOpenFollowing(true)}}>Your following users</button>
@@ -371,7 +369,7 @@ function App() {
           {authToken ? (
             <div className="app_headerRightMenuLoggedIn">
               <Button onClick={() => signOut()}>Logout</Button>
-              <h5 className="app_headerRightMenuUsername">{ user.username }</h5>
+              <h5 className="app_headerRightMenuUsername">{ username }</h5>
             </div>
             ) : (
               <div>
@@ -397,7 +395,7 @@ function App() {
       <div className="app_posts">
         {
           posts.map(post => (
-            <Post post={post} authToken={authToken} user={user} />
+            <Post post={post} authToken={authToken} user={user} BASE_URL={BASE_URL} />
           ))
         }
       </div>

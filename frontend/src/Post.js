@@ -4,10 +4,7 @@ import { Avatar, Button, Modal } from '@material-ui/core';
 import './Post.css'
 
 
-const BASE_URL = 'http://127.0.0.1/'
-
-
-function Post({ post, authToken, user }) {
+function Post({ post, authToken, user, BASE_URL }) {
 
   const [image, setImage] = useState('');
   const cat_feeded = post.feeded == true
@@ -104,9 +101,6 @@ function Post({ post, authToken, user }) {
       fileReader.onload = () => {
         resolve(fileReader.result);
       };
-      // fileReader.onerror((error) => {
-      //   reject(error);
-      // });
 
     });
   }

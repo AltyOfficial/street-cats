@@ -4,10 +4,7 @@ import { Avatar, Button, Modal } from '@material-ui/core';
 import './Profile.css'
 
 
-const BASE_URL = 'http://127.0.0.1/'
-
-
-function Profile({ profile, authToken }) {
+function Profile({ profile, authToken, BASE_URL }) {
 
   const unfollow = (event) => {
 

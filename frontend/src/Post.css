@@ -203,23 +203,23 @@
 }
   
   
-  .Auth-form-title {
+.Auth-form-title {
     text-align: center;
     margin-bottom: 1em;
     font-size: 24px;
     color: rgb(34, 34, 34);
     font-weight: 800;
-  }
+}
   
   
-  label {
+label {
     font-size: 14px;
     font-weight: 600;
     color: rgb(34, 34, 34);
-  }
+}
 
 
-  .text-color-and-size {
+.text-color-and-size {
     font-size: 12px;
     color: rgb(100, 99, 99);
-  }
+}

@@ -5,10 +5,7 @@ import { Button, Modal, makeStyles, Input } from '@material-ui/core';
 import './PostCreation.css'
 
 
-const BASE_URL = 'http://127.0.0.1/'
-
-
-function PostCreation({authToken}) {
+function PostCreation({ authToken, BASE_URL }) {
 
   const [caption, setCaption] = useState('');
   const [text, setText] = useState('');
@@ -28,7 +25,6 @@ function PostCreation({authToken}) {
   }
 
   const base64Convertion = (file) => {
-    console.log(file);
     return new Promise((resolve, reject) => {
 
       const fileReader = new FileReader();
@@ -37,10 +33,6 @@ function PostCreation({authToken}) {
       fileReader.onload = () => {
         resolve(fileReader.result);
       };
-      // fileReader.onerror((error) => {
-      //   reject(error);
-      // });
-
     });
   }
 

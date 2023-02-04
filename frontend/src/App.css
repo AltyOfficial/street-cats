@@ -160,7 +160,7 @@ label {
   padding: 7px;
   font-size: 16px;
   background-color: white;
-  color: black;
+  color: rgb(0, 0, 0);
   border: 1px solid rgb(0, 0, 0);
   transition-duration: 0.15s;
   width: 140px;

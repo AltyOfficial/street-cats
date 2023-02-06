@@ -6,10 +6,10 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
-env_path = Path('../infra') / '.env'
+env_path = Path(BASE_DIR / 'infra') / '.env'
 load_dotenv(dotenv_path=env_path)
 
-SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-tdh5613hqez!6xo54d3)0qdcofnj2mc%ol0%8(#2dksa-28+1m')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
@@ -55,11 +55,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'app_config.urls'
 
-
+TEMPLATES_DIR = BASE_DIR / 'backend/templates'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'app_config.wsgi.application'
 
 # DATABASES = {
 #     'default': {
-#         'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
-#         'NAME': os.getenv('DB_NAME', default='streetcats'),
-#         'USER': os.getenv('POSTGRES_USER', default='postgres'),
-#         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='Creat1veCloud'),
-#         'HOST': os.getenv('DB_HOST', default='db'),
+#         'ENGINE': os.getenv('DB_ENGINE'),
+#         'NAME': os.getenv('DB_NAME'),
+#         'USER': os.getenv('POSTGRES_USER'),
+#         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+#         'HOST': os.getenv('DB_HOST'),
 #         # 'PORT': os.getenv('DB_PORT', default='5432'),
 #     }
 # }
@@ -120,13 +120,13 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'backend/static'
 # STATICFILES_DIRS = (
-#     BASE_DIR / 'docs/',
+#     BASE_DIR / 'backend/static/',
 # )
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'backend/media'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 REST_FRAMEWORK = {

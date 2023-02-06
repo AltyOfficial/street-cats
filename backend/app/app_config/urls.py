@@ -4,17 +4,14 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
 
+from .settings import BASE_DIR
+
 
 urlpatterns = [
     path(
         'redoc/',
-        TemplateView.as_view(template_name='docs/redoc.html',),
+        TemplateView.as_view(template_name='redoc.html',),
         name='redoc'
-    ),
-    path(
-        'docs/',
-        TemplateView.as_view(template_name='docs/swaggerui.html',),
-        name='swagger-ui'
     ),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),

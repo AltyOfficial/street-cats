@@ -100,6 +100,8 @@ docker-compose exec backend python manage.py load_seasons
 docker-compose exec backend python manage.py createsuperuser
 ```
 
+#### Проект будет доступен по адресу http://127.0.0.1/
+
 <hr>
 <br>
 

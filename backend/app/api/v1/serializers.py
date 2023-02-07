@@ -1,12 +1,10 @@
 import os
 
 from django.contrib.auth import get_user_model, password_validation
-from rest_framework import serializers
-
 from posts.models import Post, Season
+from rest_framework import serializers
 from users.models import Follow, Profile
 from utils.fields import Base64ImageField
-
 
 User = get_user_model()
 
@@ -24,7 +22,7 @@ class ProfileSeriazlizer(serializers.ModelSerializer):
         model = Profile
         fields = (
             'picture', 'cats_meeted', 'cats_feeded',
-            'created', 'followers', 'following_you'
+            'created', 'followers', 'following_you',
         )
 
     def get_followers(self, obj):
@@ -107,10 +105,9 @@ class PostCreationSerializer(serializers.ModelSerializer):
         except Season.DoesNotExist:
             raise serializers.ValidationError('no such season.')
 
-        post = Post.objects.create(
+        return Post.objects.create(
             author=author, season=season, **validated_data
         )
-        return post
 
     def update(self, instance, validated_data):
         if 'season' in validated_data:

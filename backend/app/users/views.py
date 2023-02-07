@@ -1,3 +1,5 @@
+from api.v1.serializers import (ChangePassowrdValidator, ProfileSeriazlizer,
+                                UserSerializer)
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, viewsets
@@ -6,11 +8,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from api.v1.serializers import (ChangePassowrdValidator,
-                                ProfileSeriazlizer, UserSerializer)
-
 from .models import Follow, Profile
-
 
 User = get_user_model()
 
@@ -22,11 +20,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.request.method == 'POST' and self.action == 'create':
-            return (AllowAny(),)
+            return [AllowAny(), ]
 
-        return (IsAuthenticated(),)
+        return [IsAuthenticated(), ]
 
-    @action(methods=['GET'], detail=False)
+    @action(methods=['GET', ], detail=False)
     def me(self, request):
         user = get_object_or_404(User, pk=request.user.id)
         serializer = self.get_serializer(user, data=request.data, partial=True)
@@ -35,18 +33,17 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=200)
 
-    @action(methods=['GET',], detail=False)
+    @action(methods=['GET', ], detail=False)
     def subscriptions(self, request):
         follows = Follow.objects.filter(follower=request.user).values('author')
         users = User.objects.filter(pk__in=follows)
-        # users = User.objects.filter(following__user=request.user)
         serializer = UserSerializer(
             users, many=True, context={'request': request}
         )
 
         return Response(serializer.data, status=200)
 
-    @action(methods=['POST', 'DELETE'], detail=True,)
+    @action(methods=['POST', 'DELETE', ], detail=True,)
     def follow(self, request, pk):
         user = get_object_or_404(User, pk=pk)
 
@@ -68,7 +65,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return Response(f'you unfollowed {user.username}', status=204)
 
-    @action(methods=['PATCH',], detail=False)
+    @action(methods=['PATCH', ], detail=False)
     def change_profile_picture(self, request):
 
         profile = Profile.objects.get(user=request.user)
@@ -79,7 +76,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return Response('picture updated', status=200)
 
-    @action(methods=['POST'], detail=False)
+    @action(methods=['POST', ], detail=False)
     def set_password(self, request):
         user = self.request.user
         serializer = ChangePassowrdValidator(data=request.data)

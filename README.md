@@ -38,8 +38,6 @@ DB_PORT='PORT'
 
 <hr>
 
-<br>
-
 ## Интсрументы и технологии
 ![](https://img.shields.io/badge/python-3.11-blue)
 ![](https://img.shields.io/badge/django-4.1.5-yellowgreen)

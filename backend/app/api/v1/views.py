@@ -1,11 +1,10 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from posts.models import Post
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-
-from posts.models import Post
 from utils.filters import PostFilter
 from utils.permissions import IsAuthorOrReadOnly
 
@@ -16,11 +15,11 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostCreationSerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsAuthorOrReadOnly]
-    filter_backends = [DjangoFilterBackend]
+    permission_classes = [IsAuthorOrReadOnly, ]
+    filter_backends = [DjangoFilterBackend, ]
     filterset_class = PostFilter
 
-    @action(methods=['POST', 'DELETE'], detail=True)
+    @action(methods=['POST', 'DELETE', ], detail=True)
     def upvote(self, request, pk):
         """Upvote a post, can be deleted."""
 
@@ -37,7 +36,7 @@ class PostViewSet(viewsets.ModelViewSet):
         post.upvotes.remove(request.user)
         return Response(status=204)
 
-    @action(methods=['POST', 'DELETE'], detail=True)
+    @action(methods=['POST', 'DELETE', ], detail=True)
     def downvote(self, request, pk):
         """Downvote a post, can be deleted."""
 

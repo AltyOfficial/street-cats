@@ -1,8 +1,6 @@
 from django.contrib.auth import get_user_model
 from django_filters import rest_framework as django_filters
-
 from posts.models import Post, Season
-
 
 User = get_user_model()
 

@@ -1,8 +1,7 @@
 import os
-
-from dotenv import load_dotenv
 from pathlib import Path
 
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
@@ -38,8 +37,7 @@ INSTALLED_APPS = [
 ]
 
 
-CSRF_TRUSTED_ORIGINS=['http://localhost', 'http://127.0.0.1']
-
+CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://127.0.0.1', ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

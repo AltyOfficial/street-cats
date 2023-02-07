@@ -9,7 +9,7 @@ import PostCreation from './PostCreation.js'
 import Profile from './Profile.js'
 
 
-const BASE_URL = 'http://127.0.0.1:8000/'
+const BASE_URL = 'http://127.0.0.1/'
 
 
 function App() {

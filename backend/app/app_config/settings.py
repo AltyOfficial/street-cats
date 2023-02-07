@@ -119,14 +119,14 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'backend/static'
-# STATICFILES_DIRS = (
-#     BASE_DIR / 'backend/static/',
-# )
+STATIC_URL = '/static_backend/'
+if DEBUG:
+    STATICFILES_DIRS = [BASE_DIR / 'backend/static_backend']
+else:
+    STATIC_ROOT = BASE_DIR / 'backend/static_backend'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media_backend/'
+MEDIA_ROOT = BASE_DIR / 'media_backend'
 
 
 REST_FRAMEWORK = {

@@ -16,18 +16,18 @@ services:
     # ports:
     #   - "8000:8000"
     volumes:
-      - static_value:/backend/static/
-      - media_value:/backend/media/
+      - static_value:/backend/static_backend/
+      - media_value:/backend/media_backend/
     # depends_on:
     #   - db
     env_file:
       - ./.env
   
-  # frontend:
-  #   build:
-  #     context: ../frontend/
-  #   volumes:
-  #     - frontend_build:/frontend/build
+  frontend:
+    build:
+      context: ../frontend/
+    volumes:
+      - frontend_build:/frontend/build
 
   nginx:
     image: nginx:latest
@@ -35,16 +35,16 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - static_value:/var/html/static/
-      - media_value:/var/html/media/
-      # - frontend_build:/var/www/frontend
+      - static_value:/var/html/static_backend/
+      - media_value:/var/html/media_backend/
+      - frontend_build:/var/www/frontend
       # - ../docs/:/var/html/docs/
     depends_on:
       - backend
-      # - frontend
+      - frontend
   
 volumes:
   # postgresql_data:
-  # frontend_build:
+  frontend_build:
   static_value:
   media_value:

@@ -360,7 +360,7 @@ function App() {
       <div className='app_header'>
         <img className='app_headerLogo'
           alt='StreetCats Logo'
-          src={BASE_URL + 'media/StreetCatsLogo.svg'}
+          src={BASE_URL + 'media_backend/StreetCatsLogo.svg'}
         />
         <div>
           <button className='followingButton' onClick={() => {fetchProfiles(); setOpenFollowing(true)}}>Your following users</button>

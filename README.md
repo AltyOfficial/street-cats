@@ -67,6 +67,10 @@ python -m venv venv
 source venv/Scripts/activate
 pip install -r requirements.txt
 ```
+#### В файле ```/backend/app/app_config/settings.py``` изменить 14-ую строку на
+```sh
+DEBUG = True
+```
 #### Перейти в директорию с manage.py, выполнить миграции и загрузить данные в базу, запустить веб-сервер
 ```sh
 cd app/
@@ -74,11 +78,6 @@ python manage.py makemigrations
 python manage.py migrate
 python manage.py load_seasons
 python manage.py runserver
-```
-
-#### В файле ```/backend/app/app_config/settings.py``` изменить 14-ую строку на
-```sh
-DEBUG = True
 ```
 
 #### Backend часть проекта будет доступна по адресу http://127.0.0.1:8000/ и http://localhost:8000/
@@ -103,14 +102,14 @@ npm start
 
 ## Установка проекта в Docker контейнерах
 
-#### В файле ```/frontend/src/settings.py``` изменить 12-ую строку на
-```sh
-const BASE_URL = 'http://127.0.0.1/
-```
-
 #### В файле ```/backend/app/app_config/settings.py``` изменить 14-ую строку на
 ```sh
 DEBUG = False
+```
+
+#### В файле ```/frontend/src/App.js``` изменить 12-ую строку на
+```sh
+const BASE_URL = 'http://127.0.0.1/
 ```
 
 #### В окне терминала из базовой директории перейти в директорию с файлом docker-compose, выполнить команды для запуска контейнеров

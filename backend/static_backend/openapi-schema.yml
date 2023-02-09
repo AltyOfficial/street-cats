@@ -366,7 +366,7 @@ paths:
                   result:
                     type: array
                     items:
-                      $ref: '/components/schemas/Post'
+                      $ref: '#/components/schemas/Post'
                     description: 'List of current page objects.'
 
     post:

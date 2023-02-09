@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from utils.permissions import IsCurrentUserOrReadOnly
 
 from .models import Follow, Profile
 
@@ -22,7 +23,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.request.method == 'POST' and self.action == 'create':
             return [AllowAny(), ]
 
-        return [IsAuthenticated(), ]
+        return [IsCurrentUserOrReadOnly(), ]
 
     @action(methods=['GET', ], detail=False)
     def me(self, request):

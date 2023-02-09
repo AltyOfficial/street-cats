@@ -1,7 +1,8 @@
 import pytest
 
+from django.contrib.auth import get_user_model
 
-class TestPostView:
+from app.posts.models import Post, Season
+from app.users.models import Follow, Profile
 
-    def test_something(condition):
-        pass
+

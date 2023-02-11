@@ -67,7 +67,7 @@ def test_user_set_password(user_client):
 
 
 @pytest.mark.django_db
-def test_user_list(user_client):
+def test_user_list(user, user_client):
     """
     Проверка, что список пользователей доступен авторизованному пользователю,
     а неавторизованному - недоступен.

@@ -18,21 +18,11 @@ def test_user_signup(client):
 
     data = response.data
 
-    assert response.status_code == 201, (
-        'Код в ответе должен быть 201 Created.'
-    )
-    assert data.get('username') == payload['username'], (
-        'Поле `username` должно быть в ответе пользователю.'
-    )
-    assert data.get('email') == payload['email'], (
-        'Поле `email` должно быть в ответе пользователю.'
-    )
-    assert 'password' not in data, (
-        'Пароль не должен отображаться в ответе пользователю.'
-    )
-    assert data.get('profile') is not None, (
-        'Модель профиля должна создаваться после регистрации пользователя.'
-    )
+    assert response.status_code == 201
+    assert data.get('username') == 'HarryPottah2014'
+    assert data.get('email') == 'HP2014@gmail.com'
+    assert 'password' not in data
+    assert data.get('profile') is not None
 
 @pytest.mark.django_db
 def test_user_login(user, client):
@@ -45,12 +35,8 @@ def test_user_login(user, client):
 
     response = client.post('/api/auth/token/login/', payload)
 
-    assert response.status_code == 200, (
-        'При успешной авторизации пользователю должен отправляться код 200.'
-    )
-    assert 'auth_token' in response.data, (
-        'Пользователь должен получать в ответе Токен для аутентификации.'
-    )
+    assert response.status_code == 200
+    assert 'auth_token' in response.data
 
 
 @pytest.mark.django_db
@@ -64,10 +50,7 @@ def test_user_login_failure(user, client):
 
     response = client.post('/api/auth/token/login/', payload)
 
-    assert response.status_code == 400, (
-        'Пользователю, который ввел неверные данные, '
-        'должен возвращаться код 400.'
-    )
+    assert response.status_code == 400
 
 
 @pytest.mark.django_db
@@ -78,6 +61,4 @@ def test_user_logout(user_client):
 
     response = user_client.post('/api/auth/token/logout/')
 
-    assert response.status_code == 204, (
-        'При успешном выходе должен возвращаться код 204.'
-    )
+    assert response.status_code == 204

@@ -43,12 +43,12 @@ paths:
                   next:
                     type: string
                     nullable: true
-                    example: http://streetcats.example.org/api/users/?page=4/
+                    example: http://streetcats.example.org/api/users/?page=4
                     description: 'Link to the next page.'
                   previous:
                     type: string
                     nullable: true
-                    example: http://streetcats.example.org/api/users/?page=2/
+                    example: http://streetcats.example.org/api/users/?page=2
                     description: 'Link to the previous page.'
                   results:
                     type: array
@@ -356,12 +356,12 @@ paths:
                   next:
                     type: string
                     nullable: true
-                    example: http://streetcats.example.org/api/v1/posts/?page=4/
+                    example: http://streetcats.example.org/api/v1/posts/?page=4
                     description: 'Link to the next page.'
                   previous:
                     type: string
                     nullable: true
-                    example: http://streetcats.example.org/api/v1/posts/?page=2/
+                    example: http://streetcats.example.org/api/v1/posts/?page=2
                     description: 'Link to the previous page.'
                   result:
                     type: array
@@ -413,7 +413,7 @@ paths:
           description: "Unique id of the post."
           schema:
             type: string
-      resonses:
+      responses:
         '200':
           description: 'Success.'
           content:

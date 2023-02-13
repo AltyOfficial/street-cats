@@ -9,7 +9,7 @@ class Season(models.Model):
 
     title = models.CharField(verbose_name='title', max_length=255, unique=True)
     color = models.CharField(verbose_name='color', max_length=7,)
-    slug = models.SlugField(verbose_name='slug', max_length=50, unique=True)
+    slug = models.SlugField(verbose_name='slug', max_length=255, unique=True)
 
     class Meta:
         ordering = ('title',)

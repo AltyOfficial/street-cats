@@ -19,20 +19,10 @@ def test_get_user_me(user_client):
     data = response.data
     print(response.data)
     
-    assert response.status_code == 200, (
-        'При успешном запросе должен возвращаться код 200.'
-    )
-    assert 'username' in data and 'email' in data, (
-        'Пользователю должна возвращаться его информация, '
-        'включая поля `username` и `email`.'
-    )
-    assert data['profile'] is not None, (
-        'При регистрации пользователя должна создаваться модель его профиля.'
-    )
-    assert data['profile']['cats_meeted'] == 0, (
-        'Количество встреченных котиков должно равняться нулю '
-        'при регистрации пользователя.'
-    )
+    assert response.status_code == 200
+    assert 'username' in data and 'email' in data
+    assert data['profile'] is not None
+    assert data['profile']['cats_meeted'] == 0
 
 
 @pytest.mark.django_db
@@ -49,10 +39,7 @@ def test_user_set_password(user_client):
 
     response = user_client.post('/api/users/set_password/', payload)
 
-    assert response.status_code == 400, (
-        'При неверном старом пароле '
-        'пользователю должна возвращаться ошибка с кодом 400.'
-    )
+    assert response.status_code == 400
 
     payload = {
         'current_password': 'pass1234',
@@ -61,10 +48,7 @@ def test_user_set_password(user_client):
 
     response = user_client.post('/api/users/set_password/', payload)
 
-    assert response.status_code == 204, (
-        'При успешной смене пароля пользователю должен возвращаться код 200.'
-    )
-
+    assert response.status_code == 204
 
 @pytest.mark.django_db
 def test_user_list(user, user_client):
@@ -77,41 +61,27 @@ def test_user_list(user, user_client):
 
     response = client.get('/api/users/')
 
-    assert response.status_code == 401, (
-        'Неавторизованный пользователь не может '
-        'просматривать список пользователей.'
-    )
+    assert response.status_code == 401
 
-    response = client.get('/api/users/7/')
+    response = client.get('/api/users/1/')
 
-    assert response.status_code == 401, (
-        'Неавторизованный пользователь не может '
-        'просматривать информацию другого пользователя.'
-    )
+    assert response.status_code == 401
 
     response = user_client.get('/api/users/')
 
-    assert response.status_code == 200, (
-        'Авторизованный пользователь должен иметь доступ '
-        'к просмотру списка пользователей.'
-    )
+    assert response.status_code == 200
 
-    response = user_client.get('/api/users/7/')
+    response = user_client.get('/api/users/1/')
 
-    assert response.status_code == 200, (
-        'Авторизованный пользователь должен иметь доступ '
-        'к просмотру информации другого пользователя.'
-    )
+    assert response.status_code == 200
 
     response = user_client.get('/api/users/0/')
 
-    assert response.status_code == 404, (
-        'При вводе несуществующего айди должна возвращаться ошибка 404.'
-    )
+    assert response.status_code == 404
 
 
 @pytest.mark.django_db
-def test_user_update(user_client):
+def test_user_update(user, user_client):
     """
     Проверка, что текущий авторизованный пользователь может редактировать свой
     профиль, чужие - не может.
@@ -128,11 +98,11 @@ def test_user_update(user_client):
         'username': 'newHarryPottah'
     }
 
-    response = user_client.patch('/api/users/8/', payload)
+    response = user_client.patch('/api/users/1/', payload)
 
     assert response.status_code == 200
 
-    user = User.objects.get(id=8)
+    user = User.objects.get(id=1)
 
     assert user.profile.picture.name == ''
     assert user.username == 'newHarryPottah'
@@ -151,7 +121,7 @@ def test_user_update(user_client):
 
     assert response.status_code == 200
 
-    user = User.objects.get(id=8)
+    user = User.objects.get(id=1)
 
     assert user.profile.picture != ''
 

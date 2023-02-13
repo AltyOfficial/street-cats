@@ -3,6 +3,8 @@ import pytest
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 
+from users.models import Profile
+
 User = get_user_model()
 
 
@@ -13,16 +15,30 @@ def client():
 
 @pytest.fixture
 def user(client):
+    user = User.objects.create_user(
+        id=1,
+        username='HarryPottah2014',
+        email='HP2014@gmail.com',
+        password='pass1234'
+    )
 
-    payload = {
-        'username': 'HarryPottah2014',
-        'email': 'HP2014@gmail.com',
-        'password': 'pass1234'
-    }
+    Profile.objects.create(user=user, cats_meeted=0, cats_feeded=0)
 
-    response = client.post('/api/users/', payload)
+    return user
 
-    return response.data
+
+@pytest.fixture
+def another_user():
+    user = User.objects.create_user(
+        id=2,
+        username='TestUser01',
+        email='test@user01.com',
+        password='pass1234'
+    )
+
+    Profile.objects.create(user=user, cats_meeted=0, cats_feeded=0)
+
+    return user
 
 
 @pytest.fixture
